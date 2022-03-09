@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // print(routeNameGlobal);
     MaterialColor primeColor = MaterialColor(0xFF7CB211, color);
-    MaterialColor accentColor = MaterialColor(0xFF7CB211, color);
+    // MaterialColor accentColor = MaterialColor(0xFF7CB211, color);
     return MaterialApp(
       title: 'Ritco Surveys',
       debugShowCheckedModeBanner: false,

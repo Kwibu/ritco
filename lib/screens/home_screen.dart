@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ritco_app/screens/comments_screenL.dart';
 import 'package:ritco_app/widgets/home_card_container.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getUserCredentials();
+  }
+
+  int selectedIndex = 0;
+
+  void _selectedPage(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    print(selectedIndex);
   }
 
   void getUserCredentials() async {
@@ -58,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         });
       });
-      // print(loadedSurvey);
+
       setState(() {
         _services.addAll(loadedSurvey);
       });
@@ -83,104 +93,124 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.only(
-            top: 50,
-            right: 20,
-            left: 20,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+  Widget homeScreenWidget(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        margin: const EdgeInsets.only(
+          top: 50,
+          right: 20,
+          left: 20,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hi $userName !",
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Text("How are you doing today?"),
+                  ],
+                ),
+                const Icon(Icons.star_outline),
+              ],
+            ),
+            Stack(children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 20),
+                child: Image.asset("assets/illustrations/Group 13.png"),
+              ),
+              Positioned(
+                width: MediaQuery.of(context).size.width * 0.5,
+                top: 30,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8, left: 12),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hi $userName !",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          "Transport yourself and your assets conveniently",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      const Text("How are you doing today?"),
+                      Text("Give your feedback"),
                     ],
                   ),
-                  const Icon(Icons.star_outline),
-                ],
-              ),
-              Stack(children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Image.asset("assets/illustrations/Group 13.png"),
                 ),
-                Positioned(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  top: 30,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 8.0, bottom: 8, left: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            "Transport yourself and your assets conveniently",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Text("Give your feedback"),
-                      ],
-                    ),
-                  ),
-                )
-              ]),
-              //? Adding Services
-              const Padding(
-                padding: EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  "Services",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+              )
+            ]),
+            //? Adding Services
+            const Padding(
+              padding: EdgeInsets.only(bottom: 15.0),
+              child: Text(
+                "Services",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const Text(
-                "Try to fill survey accordingly how you feed about our company it will help us to manage any problem you have ",
-                // textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, height: 1.5),
-              ),
+            ),
+            const Text(
+              "Try to fill survey accordingly how you feed about our company it will help us to manage any problem you have ",
+              // textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, height: 1.5),
+            ),
 
-              _services.isEmpty
-                  ? Container(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      child: const Center(child: CircularProgressIndicator()))
-                  : GridView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.vertical,
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 240,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.9,
-                      ),
-                      children: _services
-                          .map((element) => HomeCardContainer(
-                              element['surveyTitle'],
-                              element['surveyDescription'],
-                              element['id'],
-                              "assets/illustrations/employee.png"))
-                          .toList()),
-            ],
-          ),
+            _services.isEmpty
+                ? Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    child: const Center(child: CircularProgressIndicator()))
+                : GridView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    primary: false,
+                    scrollDirection: Axis.vertical,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 240,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.9,
+                    ),
+                    children: _services
+                        .map((element) => HomeCardContainer(
+                            element['surveyTitle'],
+                            element['surveyDescription'],
+                            element['id'],
+                            "assets/illustrations/employee.png"))
+                        .toList()),
+          ],
         ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> _page = [
+      homeScreenWidget(context),
+      const CommentScreen(),
+      homeScreenWidget(context),
+    ];
+    return Scaffold(
+      body: _page[selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: _selectedPage,
+        currentIndex: selectedIndex,
+        fixedColor: Colors.black,
+        unselectedItemColor: Colors.black54,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feeds'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), label: 'Account'),
+        ],
       ),
     );
   }

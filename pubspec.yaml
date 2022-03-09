@@ -41,6 +41,8 @@ dev_dependencies:
   lorem_ipsum: ^0.0.1
   http: ^0.13.4
   shared_preferences: ^2.0.9
+  like_button: ^2.0.4
+  flutter_icons: ^1.1.0
 
 flutter:
   uses-material-design: true
@@ -50,7 +52,6 @@ flutter:
     - assets/illustrations/istockphoto-1312644983-612x612.jpg
     - assets/illustrations/Group 13.png
     - assets/illustrations/employee.png
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
