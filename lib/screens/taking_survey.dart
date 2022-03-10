@@ -15,10 +15,25 @@ class SurveyQuestionaire extends StatefulWidget {
 
 class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
   final List _selectedSurvey = [];
+  List<List<Question>> multipleChoices = [];
+
+  List<int> identifier = [];
+
   String survedId = '';
-  int _value = 0;
+
   bool isLoading = false;
   var surveyAnswersArray = [];
+  int allMultipleChoicesCount = 0;
+  Map selectedAnswersData = {};
+
+  List<String> choices = [
+    //Arranging index following modulo 5,
+    "Very  dissatisfied",
+    "Very Satisfied",
+    "Somewhat Satisfied",
+    "Neither Satisfied nor Satisfied",
+    "Somewhat dissatisfied"
+  ];
 
   console(args) => print(args);
 
@@ -28,7 +43,7 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
     super.initState();
   }
 
-  void getCredentials() async {
+  Future getCredentials() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     survedId = pref.getString('surveyId')!;
     _getSurveyInformationHandler();
@@ -68,6 +83,19 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
       setState(() {
         _selectedSurvey.addAll(selectedSingleSurvey);
       });
+
+      //if _selectedSurvey list is not empty
+      if (_selectedSurvey.isNotEmpty) {
+        print('SelectedSurvey is filled');
+
+        for (var item in _selectedSurvey[0]['surveyQuestions']) {
+          identifier.add(0);
+          print(item);
+        }
+
+        //generate multipleChoices with unique <int> ids for every question
+
+      }
     } catch (error) {
       setState(() {
         isLoading = false;
@@ -91,7 +119,8 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
 
   @override
   Widget build(BuildContext context) {
-    console(_selectedSurvey);
+    // print(multipleChoices);
+    // console(_selectedSurvey);
     return Scaffold(
       appBar: appBarController(context, () {}, "Questionaire", Colors.white,
           Colors.black, Colors.black),
@@ -130,7 +159,9 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _selectedSurvey[0]['surveyTitle'],
+                            _selectedSurvey.isEmpty
+                                ? 'Loading'
+                                : _selectedSurvey[0]['surveyTitle'],
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
@@ -140,7 +171,9 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                             height: 10,
                           ),
                           Text(
-                            _selectedSurvey[0]['surveyDescription'],
+                            _selectedSurvey.isEmpty
+                                ? 'Loading'
+                                : _selectedSurvey[0]['surveyDescription'],
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.white),
                           ),
@@ -160,11 +193,23 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                       ),
                     ),
                   ),
+
+                  //building survey questions and multiple choices
+
+                  // Container(
+                  //   height: MediaQuery.of(context).size.height * .5,
+                  //   child: ListView(
+                  //     children: questionsWidgets,
+                  //   ),
+                  // ),
+
                   ListView.builder(
                       primary: true,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _selectedSurvey[0]['surveyQuestions'].length,
+                      itemCount: _selectedSurvey.isEmpty
+                          ? 0
+                          : _selectedSurvey[0]['surveyQuestions'].length,
                       itemBuilder: (context, index) => Container(
                             padding: const EdgeInsets.only(
                                 left: 20, bottom: 10, right: 20),
@@ -181,30 +226,48 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                                         fontSize: 17),
                                   ),
                                 ),
+                                //multiple choices
                                 SizedBox(
                                   child: Column(
-                                      children: QUESTIONS
-                                          .map(
-                                            (quest) => Row(
-                                              children: [
-                                                Radio(
-                                                    key: ValueKey(quest.id),
-                                                    value: int.parse(quest.id),
-                                                    groupValue: _value,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _value = value as int;
-                                                      });
-                                                    }),
-                                                Text(quest.questonName)
-                                              ],
-                                            ),
-                                          )
-                                          .toList()),
+                                      children:
+                                          //  multipleChoices[index]
+                                          QUESTIONS
+                                              .map(
+                                                (quest) => Row(
+                                                  children: [
+                                                    Radio(
+                                                        key: ValueKey(quest.id),
+                                                        value:
+                                                            int.parse(quest.id),
+                                                        groupValue:
+                                                            identifier[index],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            //index identifies which question in the array
+                                                            //Value is the question weight
+                                                            print(
+                                                                'Question index:$index');
+                                                            print(
+                                                                'selected value: $value');
+                                                            identifier[index] =
+                                                                value as int;
+                                                            selectedAnswersData[
+                                                                index] = value;
+
+                                                            print(
+                                                                selectedAnswersData);
+                                                          });
+                                                        }),
+                                                    Text(quest.questonName)
+                                                  ],
+                                                ),
+                                              )
+                                              .toList()),
                                 ),
                               ],
                             ),
                           )),
+
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
