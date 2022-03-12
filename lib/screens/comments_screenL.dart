@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ritco_app/models/post.dart';
-import 'package:like_button/like_button.dart';
+import 'package:ritco_app/widgets/comment_widget.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentScreen extends StatefulWidget {
   const CommentScreen({Key? key}) : super(key: key);
@@ -10,9 +14,73 @@ class CommentScreen extends StatefulWidget {
 }
 
 class _CommentScreenState extends State<CommentScreen> {
+  bool isLoading = false;
+  // List comments = [];
+  List<Post> THREADS = [];
+  String username = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getCredentials();
+    super.initState();
+  }
+
+  Future getCredentials() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    username = pref.getString('username')!;
+    _getCommentsHandler();
+  }
+
+  void _getCommentsHandler() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      var response = await http.get(Uri.parse(
+          'https://ritco-app-default-rtdb.firebaseio.com/comments.json'));
+      var transformData = jsonDecode(response.body)!;
+      if (response.statusCode == 200) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+
+      transformData.forEach((surveyId, surveyData) {
+        setState(() {
+          THREADS.add(Post(
+              postId: surveyId,
+              postTitle: surveyData["username"],
+              postSubTitle: surveyData["userEmail"],
+              postDescription: surveyData["commentDescription"],
+              imageFile: "imageFile"));
+        });
+      });
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+      print(error);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("Oooops"),
+                content: const Text("Invalid Data"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text("OK"))
+                ],
+              ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
@@ -22,7 +90,8 @@ class _CommentScreenState extends State<CommentScreen> {
               Row(
                 children: [
                   CircleAvatar(
-                    child: Image.asset("assets/avatars/Rectangle 13.png"),
+                    child: Image.network(
+                        "https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png"),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 120.0),
@@ -47,150 +116,43 @@ class _CommentScreenState extends State<CommentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Filter"),
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Comments",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          primary: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: THREADS.length,
-                          itemBuilder: (context, index) => InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed("/message-screen", arguments: {
-                                    "title": THREADS[index].postTitle
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 10, top: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 8.0),
-                                          child: CircleAvatar(
-                                              child: Text(THREADS[index]
-                                                  .postTitle
-                                                  .substring(0, 2))),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              THREADS[index].postTitle,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            ),
-                                            Text(
-                                              THREADS[index].postSubTitle,
-                                              style:
-                                                  const TextStyle(fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ]),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Text(
-                                          THREADS[index].postDescription,
-                                          style: const TextStyle(height: 1.5),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 100,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8.0),
-                                                  child: LikeButton(
-                                                    size: 20,
-                                                    circleColor:
-                                                        const CircleColor(
-                                                            start: Color(
-                                                                0xff00ddff),
-                                                            end: Color(
-                                                                0xff0099cc)),
-                                                    bubblesColor:
-                                                        const BubblesColor(
-                                                      dotPrimaryColor:
-                                                          Color(0xff33b5e5),
-                                                      dotSecondaryColor:
-                                                          Color(0xff0099cc),
-                                                    ),
-                                                    likeBuilder:
-                                                        (bool isLiked) {
-                                                      return Icon(
-                                                        Icons.favorite,
-                                                        // FontAwesome5.thumbs_down,
-                                                        color: isLiked
-                                                            ? Colors
-                                                                .deepPurpleAccent
-                                                            : Colors.grey,
-                                                        size: 20,
-                                                      );
-                                                    },
-                                                    likeCount: 665,
-                                                  ),
-                                                ),
-                                                LikeButton(
-                                                  size: 20,
-                                                  circleColor:
-                                                      const CircleColor(
-                                                          start:
-                                                              Color(0xff00ddff),
-                                                          end: Color(
-                                                              0xff0099cc)),
-                                                  bubblesColor:
-                                                      const BubblesColor(
-                                                    dotPrimaryColor:
-                                                        Color(0xff33b5e5),
-                                                    dotSecondaryColor:
-                                                        Color(0xff0099cc),
-                                                  ),
-                                                  likeBuilder: (bool isLiked) {
-                                                    return Icon(
-                                                      Icons.thumb_down,
-                                                      // FontAwesome5.thumbs_down,
-                                                      color: isLiked
-                                                          ? Colors
-                                                              .deepPurpleAccent
-                                                          : Colors.grey,
-                                                      size: 20,
-                                                    );
-                                                  },
-                                                  likeCount: 665,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 8.0),
-                                        child: Container(
-                                          color: Colors.black38,
-                                          height: 1,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )),
+                      child: isLoading
+                          ? SizedBox(
+                              height: isLoading
+                                  ? MediaQuery.of(context).size.height * 0.8
+                                  : null,
+                              child: const Center(
+                                  child: CircularProgressIndicator()))
+                          : THREADS.isEmpty && isLoading == false
+                              ? SizedBox(
+                                  height: isLoading
+                                      ? MediaQuery.of(context).size.height
+                                      : null,
+                                  child: const Center(
+                                      child:
+                                          Text("There is no comment here yet")))
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  primary: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: THREADS.length,
+                                  itemBuilder: (context, index) =>
+                                      CommentWidget(
+                                          THREADS[index].postId,
+                                          username,
+                                          THREADS[index].postTitle,
+                                          THREADS[index].postSubTitle,
+                                          THREADS[index].postDescription)),
                     )
                   ],
                 ),

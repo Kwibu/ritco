@@ -17,6 +17,8 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
+    final _form = GlobalKey<FormState>();
+    var _loginDetails = const LoginModel(email: "", password: "");
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final firstName = routeArgs['firstName'];
@@ -24,8 +26,6 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
     final gender = routeArgs['gender'];
     final age = routeArgs['age'];
 
-    final _form = GlobalKey<FormState>();
-    var _loginDetails = const LoginModel(email: "", password: "");
     // ignore: non_constant_identifier_names
     Future<void> signUpHandler() async {
       var validateForm = _form.currentState!.validate();
@@ -77,9 +77,8 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
               await pref.setString("username", "${firstName} ${lastName}");
               await pref.setString("firstname", firstName);
               await pref.setString("lastname", lastName);
+              await pref.setString("useraccount", _loginDetails.email);
               Navigator.of(context).pushReplacementNamed('/home-screen');
-
-              print(userData);
               setState(() {
                 isLoading = false;
               });

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:ritco_app/models/answer.dart';
 import 'package:ritco_app/models/questionModel.dart';
 import 'package:ritco_app/widgets/app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,11 +21,15 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
   List<int> identifier = [];
 
   String survedId = '';
+  String emailAccount = '';
+  String username = '';
 
   bool isLoading = false;
+  bool isSubmitting = false;
   var surveyAnswersArray = [];
   int allMultipleChoicesCount = 0;
-  Map selectedAnswersData = {};
+  var selectedAnswersData = {};
+  late String commentDescriptionValue;
 
   List<String> choices = [
     //Arranging index following modulo 5,
@@ -46,7 +51,14 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
   Future getCredentials() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     survedId = pref.getString('surveyId')!;
+    username = pref.getString('username')!;
     _getSurveyInformationHandler();
+  }
+
+  commentHandler(value) {
+    setState(() {
+      commentDescriptionValue = value;
+    });
   }
 
   void _getSurveyInformationHandler() async {
@@ -92,9 +104,6 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
           identifier.add(0);
           print(item);
         }
-
-        //generate multipleChoices with unique <int> ids for every question
-
       }
     } catch (error) {
       setState(() {
@@ -119,8 +128,115 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
 
   @override
   Widget build(BuildContext context) {
-    // print(multipleChoices);
-    // console(_selectedSurvey);
+    final routeArgs =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final surveyIdLocal = routeArgs['surveyId'];
+    final accountUsername = routeArgs['username'];
+
+    userAccountEmailHandler(email) {
+      if (email == null || email == '') {
+        return "djconfiance@gmail.com";
+      } else {
+        return email;
+      }
+    }
+
+    // ignore: todo
+    // TODO SENDING USER COMMENT TO THE DATABASE
+
+    // ignore: todo
+    // TODO SUBMITTING SURVEY TO THE DATABASE
+    void submitResponseHandler() async {
+      try {
+        setState(() {
+          isSubmitting = true;
+        });
+
+        setState(() {
+          isSubmitting = true;
+        });
+        var response = await http.post(
+            Uri.parse(
+                'https://ritco-app-default-rtdb.firebaseio.com/surveysAnswers.json'),
+            body: json.encode({
+              "surveyId": surveyIdLocal,
+              "userEmail": userAccountEmailHandler(emailAccount),
+              "surveyAnswers": "$selectedAnswersData"
+            }));
+
+        if (commentDescriptionValue.isNotEmpty) {
+          await http.post(
+              Uri.parse(
+                  'https://ritco-app-default-rtdb.firebaseio.com/comments.json'),
+              body: json.encode({
+                "id": surveyIdLocal,
+                "userEmail": userAccountEmailHandler(emailAccount),
+                "username": username,
+                "commentDescription": commentDescriptionValue
+              }));
+        }
+
+        var userData = json.decode(response.body);
+        if (userData['error'] != null) {
+          setState(() {
+            isSubmitting = false;
+          });
+
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: const Text("Oooops"),
+                    content: Text(userData['error']['message']),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: const Text("OK"))
+                    ],
+                  ));
+        } else {
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: const Text("Wow"),
+                    content:
+                        const Text("Your Response has been sent successfully"),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushReplacementNamed('/home-screen');
+                          },
+                          child: const Text("OK"))
+                    ],
+                  ));
+
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } catch (error) {
+        setState(() {
+          isLoading = false;
+        });
+        console(error);
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: const Text("Oooops"),
+                  content: const Text("Check your internet connection"),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
+    }
+
     return Scaffold(
       appBar: appBarController(context, () {}, "Questionaire", Colors.white,
           Colors.black, Colors.black),
@@ -193,16 +309,6 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                       ),
                     ),
                   ),
-
-                  //building survey questions and multiple choices
-
-                  // Container(
-                  //   height: MediaQuery.of(context).size.height * .5,
-                  //   child: ListView(
-                  //     children: questionsWidgets,
-                  //   ),
-                  // ),
-
                   ListView.builder(
                       primary: true,
                       shrinkWrap: true,
@@ -245,17 +351,17 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                                                           setState(() {
                                                             //index identifies which question in the array
                                                             //Value is the question weight
-                                                            print(
-                                                                'Question index:$index');
-                                                            print(
-                                                                'selected value: $value');
+                                                            // print(
+                                                            //     'Question index:$index');
+                                                            // print(
+                                                            //     'selected value: $value');
                                                             identifier[index] =
                                                                 value as int;
                                                             selectedAnswersData[
                                                                 index] = value;
 
-                                                            print(
-                                                                selectedAnswersData);
+                                                            // print(
+                                                            //     selectedAnswersData);
                                                           });
                                                         }),
                                                     Text(quest.questonName)
@@ -267,13 +373,12 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                               ],
                             ),
                           )),
-
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Padding(
+                      children: [
+                        const Padding(
                           padding: EdgeInsets.only(bottom: 20.0),
                           child: Text(
                             "Other Comments",
@@ -282,7 +387,8 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                           ),
                         ),
                         TextField(
-                          decoration: InputDecoration(
+                          onChanged: commentHandler,
+                          decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Comment',
                           ),
@@ -294,10 +400,12 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                     margin: const EdgeInsets.all(20),
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "  Submit  ",
-                          style: TextStyle(color: Colors.white),
+                        onPressed: () {
+                          submitResponseHandler();
+                        },
+                        child: Text(
+                          isSubmitting ? "Loading..." : "Submit",
+                          style: const TextStyle(color: Colors.white),
                         )),
                   )
                 ],

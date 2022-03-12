@@ -45,7 +45,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
       if (validateForm && currentDate != null && dropdownValue != "Your Sex") {
         Navigator.of(context).pushNamed("/sign-up-credetials", arguments: {
           "firstName": _userInformation.firstName,
-          "lastName": _userInformation.lastName,
+                    "lastName": _userInformation.lastName,
           "gender": dropdownValue,
           "age": currentDate
         });
