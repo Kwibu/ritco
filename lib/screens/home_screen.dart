@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ritco_app/screens/comments_screenL.dart';
+import 'package:ritco_app/screens/profile_screen.dart';
 import 'package:ritco_app/widgets/home_card_container.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -188,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> _page = [
       homeScreenWidget(context),
       const CommentScreen(),
-      homeScreenWidget(context),
+      const ProfileScreen(),
     ];
     return Scaffold(
       body: _page[selectedIndex],

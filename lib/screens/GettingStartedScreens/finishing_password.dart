@@ -78,7 +78,7 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
               await pref.setString("firstname", firstName);
               await pref.setString("lastname", lastName);
               await pref.setString("useraccount", _loginDetails.email);
-              Navigator.of(context).pushReplacementNamed('/home-screen');
+              await Navigator.of(context).pushReplacementNamed('/home-screen');
               setState(() {
                 isLoading = false;
               });

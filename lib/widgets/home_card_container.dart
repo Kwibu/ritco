@@ -45,6 +45,18 @@ class _HomeCardContainerState extends State<HomeCardContainer> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 1, 180, 76),
+                    Color.fromARGB(255, 109, 187, 7),
+                  ],
+                  begin: FractionalOffset(0.0, 0.0),
+                  end: FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp,
+                ),
+              ),
               padding: const EdgeInsets.only(top: 20, left: 10),
               constraints: const BoxConstraints(minHeight: 130),
               child: Row(
@@ -60,7 +72,7 @@ class _HomeCardContainerState extends State<HomeCardContainer> {
                           fit: BoxFit.cover,
                         )),
                   ),
-                  Container(
+                  SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -70,17 +82,17 @@ class _HomeCardContainerState extends State<HomeCardContainer> {
                             widget.surveyTitle.toUpperCase(),
                             style: const TextStyle(
                               fontSize: 20,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         Align(
-                          child: Container(
+                          child: SizedBox(
                             width: MediaQuery.of(context).size.width * 0.6,
                             child: Text(widget.surveyDescription,
                                 style: const TextStyle(
-                                  fontSize: 17,
-                                )),
+                                    fontSize: 17, color: Colors.white)),
                           ),
                         ),
                       ],
