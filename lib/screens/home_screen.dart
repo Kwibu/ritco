@@ -166,25 +166,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: const Center(child: CircularProgressIndicator()))
-                : GridView(
-                    physics: const NeverScrollableScrollPhysics(),
+                : ListView.builder(
+                    primary: true,
                     shrinkWrap: true,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 240,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.9,
-                    ),
-                    children: _services
-                        .map((element) => HomeCardContainer(
-                            element['surveyTitle'],
-                            element['surveyDescription'],
-                            element['id'],
-                            "assets/illustrations/employee.png"))
-                        .toList()),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _services.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        HomeCardContainer(
+                            _services[index]['surveyTitle'],
+                            _services[index]['surveyDescription'],
+                            _services[index]['id'],
+                            "assets/illustrations/employee.png")),
           ],
         ),
       ),
