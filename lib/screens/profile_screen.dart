@@ -119,10 +119,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: CircleAvatar(
               minRadius: 40,
               child: Text(
-                username!.substring(0, 2).toUpperCase() ?? '',
-                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                username!.substring(0, 2).toUpperCase(),
+                style:
+                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               ),
-              backgroundColor: Color.fromARGB(255, 158, 156, 156),
+              backgroundColor: const Color.fromARGB(255, 158, 156, 156),
             )),
       ],
     );

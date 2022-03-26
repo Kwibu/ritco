@@ -45,11 +45,15 @@ class _SignUpStartedState extends State<SignUpStarted> {
       if (validateForm && currentDate != null && dropdownValue != "Your Sex") {
         Navigator.of(context).pushNamed("/sign-up-credetials", arguments: {
           "firstName": _userInformation.firstName,
-                    "lastName": _userInformation.lastName,
+          "lastName": _userInformation.lastName,
           "gender": dropdownValue,
           "age": currentDate
         });
       }
+    }
+
+    void _goAndLoginHandler() {
+      Navigator.of(context).pushNamed("/login");
     }
 
     return Scaffold(
@@ -314,14 +318,17 @@ class _SignUpStartedState extends State<SignUpStarted> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    child: const Text(
-                      "Login",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  InkWell(
+                    onTap: _goAndLoginHandler,
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      child: const Text(
+                        "Login",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   )
                 ],

@@ -10,6 +10,6 @@ class UserTask {
 
 List<UserTask> userList = [
   UserTask(id: "1", icon: Icons.mobile_friendly, name: 'Invite a friend'),
-  UserTask(id: "1", icon: Icons.support, name: 'Help & support'),
-  UserTask(id: "1", icon: Icons.logout, name: 'Logout'),
+  UserTask(id: "2", icon: Icons.support, name: 'Help & support'),
+  UserTask(id: "3", icon: Icons.logout, name: 'Logout'),
 ];

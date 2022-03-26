@@ -5,6 +5,7 @@ import 'package:ritco_app/screens/GettingStartedScreens/sign_up_started.dart';
 import 'package:ritco_app/screens/chosen_screen.dart';
 import 'package:ritco_app/screens/getting_started.dart';
 import 'package:ritco_app/screens/home_screen.dart';
+import 'package:ritco_app/screens/login_screen.dart';
 import 'package:ritco_app/screens/taking_survey.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         "/getting-Started": (context) => const GettingStartedScreen(),
         "/getting-started-signup": (context) => const SignUpStarted(),
         "/sign-up-credetials": (context) => const FinishingSignUp(),
+        '/login': (context) => const Login(),
         "/home-screen": (context) => const HomeScreen(),
         "/survey-details-answers": (context) => const SurveyQuestionaire()
       },
