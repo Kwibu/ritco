@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ritco_app/models/comment.dart';
 import 'package:ritco_app/models/post.dart';
 import 'package:ritco_app/widgets/comment_widget.dart';
 import 'package:http/http.dart' as http;
@@ -18,11 +19,13 @@ class _CommentScreenState extends State<CommentScreen> {
   // List comments = [];
   List<Post> THREADS = [];
   String username = '';
+  List<Likes> likes = [];
 
   @override
   void initState() {
     // TODO: implement initState
     getCredentials();
+
     super.initState();
   }
 
@@ -79,6 +82,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(likes);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

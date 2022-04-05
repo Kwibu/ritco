@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentWidget extends StatefulWidget {
   String globalCommentId;
-
+  // List<Likes> likes;
   String username;
   String postTitle;
   String postSubTitle;
@@ -25,16 +25,21 @@ class CommentWidget extends StatefulWidget {
 
 class _CommentWidgetState extends State<CommentWidget> {
   bool isCommentOpen = false;
+  String dataUser = '';
   bool isLiked = false;
+  bool isNotLiked = false;
   List<Comment> comments = [];
   String commentContent = '';
   bool isCommentLiked = false;
-  List likes = [];
+  Map likes = {};
+  bool isInDatabaseLiked = false;
+  List numberOfLikes = [];
+  int likesNumberFinal = 0;
 
   @override
   void initState() {
     super.initState();
-    getCommentHandler();
+    getAllLikesHandler();
   }
 
   void console(args) => print(args);
@@ -48,18 +53,32 @@ class _CommentWidgetState extends State<CommentWidget> {
           "isLiked": true,
           "globalcomment_id": widget.globalCommentId,
           "comment_content": commentContent,
-          "username": widget.username
+          "username": widget.username,
+          "createdTime": DateTime.now().toString()
         }));
   }
 
   likeButtonHandler() {
+    if (isInDatabaseLiked == true) {
+      return;
+    }
     setState(() {
+      likesNumberFinal = numberOfLikes.length + 1;
       isLiked = !isLiked;
     });
     try {
       addLikeToDatabaseHandler();
     } catch (error) {
       print(error);
+    }
+  }
+
+  commentDislikeButton() {
+    setState(() {
+      isNotLiked = true;
+    });
+    try {} catch (error) {
+      console(error);
     }
   }
 
@@ -71,31 +90,29 @@ class _CommentWidgetState extends State<CommentWidget> {
         body: json.encode({
           "globalcomment_id": widget.globalCommentId,
           "username": widget.username,
+          "likedStatus": true,
           "createdTime": DateTime.now().toString()
         }));
   }
 
-  void getCommentHandler() async {
+  void getAllLikesHandler() async {
     try {
       var response = await http.get(Uri.parse(
-          'https://ritco-app-default-rtdb.firebaseio.com/postsComments.json'));
+          'https://ritco-app-default-rtdb.firebaseio.com/likedComments.json'));
       var transformData = jsonDecode(response.body)!;
 
-      // List<Comment> loadedComments = [];
-      transformData.forEach((commentId, commentData) {
+      transformData.forEach((likeId, likeData) {
         setState(() {
-          // globalcomment_id
-          if (commentData["globalcomment_id"] == widget.globalCommentId) {
-            comments.add(Comment(
-                id: commentData['globalcomment_id'],
-                username: commentData['username'],
-                messageContent: commentData['comment_content']));
+          if (likeData['globalcomment_id'] == widget.globalCommentId) {
+            likes = {"username_from_database": likeData['username']};
+            numberOfLikes
+                .add(likeData["globalcomment_id"] == widget.globalCommentId);
+            if (likeData['likedStatus'] == true) {
+              isInDatabaseLiked = true;
+            }
           }
         });
       });
-
-      // final selectedSingleSurvey = loadedComments
-      //     .where((element) => element.id == widget.globalCommentId);
     } catch (error) {
       print(error);
       showDialog(
@@ -173,58 +190,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                               fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                 ),
-                // comments.isEmpty
-                //     ? Container()
-                //     : ListView.builder(
-                //         primary: true,
-                //         shrinkWrap: true,
-                //         physics: const NeverScrollableScrollPhysics(),
-                //         itemCount: comments.length,
-                //         itemBuilder: (context, index) => Padding(
-                //               padding: const EdgeInsets.only(bottom: 3.0),
-                //               child: Column(
-                //                 crossAxisAlignment: CrossAxisAlignment.start,
-                //                 children: [
-                //                   Padding(
-                //                     padding: const EdgeInsets.only(bottom: 2.0),
-                //                     child: Text(
-                //                       comments[index].username,
-                //                       style: const TextStyle(
-                //                           fontSize: 14,
-                //                           fontWeight: FontWeight.bold),
-                //                     ),
-                //                   ),
-                //                   Padding(
-                //                     padding: const EdgeInsets.only(left: 4.0),
-                //                     child: Text(comments[index].messageContent),
-                //                   ),
-                //                 ],
-                //               ),
-                //             )),
               ],
             ),
-            // isCommentOpen
-            //     ? Padding(
-            //         padding: const EdgeInsets.symmetric(vertical: 10),
-            //         child: Column(
-            //           children: [
-            //             TextField(
-            //               onChanged: commentValue,
-            //               maxLines: 3,
-            //               decoration: const InputDecoration(
-            //                 border: OutlineInputBorder(),
-            //                 hintText: 'Comment',
-            //               ),
-            //             ),
-            //             Align(
-            //               alignment: Alignment.topRight,
-            //               child: OutlinedButton(
-            //                   onPressed: addCommentHandler,
-            //                   child: const Text("Post")),
-            //             )
-            //           ],
-            //         ))
-            //     : Container(),
             Container(
               width: 200,
               child: Row(
@@ -234,17 +201,25 @@ class _CommentWidgetState extends State<CommentWidget> {
                     children: [
                       Padding(
                           padding: const EdgeInsets.only(right: 13.0),
-                          child: IconButton(
-                              onPressed: () {
-                                likeButtonHandler();
-                              },
-                              icon: isLiked
-                                  ? const Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
-                                    )
-                                  : const Icon(
-                                      Icons.favorite_border_outlined))),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    likeButtonHandler();
+                                  },
+                                  // ignore: unrelated_type_equality_checks
+                                  icon: isLiked ||
+                                          likes['username_from_database'] ==
+                                              widget.username
+                                      ? const Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                        )
+                                      : const Icon(
+                                          Icons.favorite_border_outlined)),
+                              Text(numberOfLikes.length.toString())
+                            ],
+                          )),
                       LikeButton(
                         size: 20,
                         circleColor: const CircleColor(

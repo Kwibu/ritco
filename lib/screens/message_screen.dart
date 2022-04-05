@@ -20,7 +20,7 @@ class _MessageScreenState extends State<MessageScreen> {
   List<Comment> comments = [];
   String commentContent = '';
   bool isCommentLiked = false;
-  List likes = [];
+
   String? username;
   String? globalCommentId;
   bool isLoading = false;
