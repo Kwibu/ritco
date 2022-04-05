@@ -32,14 +32,17 @@ class _CommentWidgetState extends State<CommentWidget> {
   String commentContent = '';
   bool isCommentLiked = false;
   Map likes = {};
+  Map unliked = {};
   bool isInDatabaseLiked = false;
   List numberOfLikes = [];
+  List numberOfDislike = [];
   int likesNumberFinal = 0;
 
   @override
   void initState() {
     super.initState();
     getAllLikesHandler();
+    getAllDislikesHandler();
   }
 
   void console(args) => print(args);
@@ -75,11 +78,26 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   commentDislikeButton() {
     setState(() {
-      isNotLiked = true;
+      isNotLiked = !isNotLiked;
     });
-    try {} catch (error) {
+    try {
+      addDisLikeToDatabaseHandler();
+    } catch (error) {
       console(error);
     }
+  }
+
+  // todo ADDING DISLIKE TO THE DATABASE
+  void addDisLikeToDatabaseHandler() async {
+    var response = await http.post(
+        Uri.parse(
+            'https://ritco-app-default-rtdb.firebaseio.com/dislikedComments.json'),
+        body: json.encode({
+          "globalcomment_id": widget.globalCommentId,
+          "username": widget.username,
+          "dislikedStatus": true,
+          "createdTime": DateTime.now().toString()
+        }));
   }
 
   // todo ADDING COMMENTS TO THE DATABASE
@@ -131,8 +149,45 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
   }
 
+  void getAllDislikesHandler() async {
+    try {
+      var response = await http.get(Uri.parse(
+          'https://ritco-app-default-rtdb.firebaseio.com/dislikedComments.json'));
+      var transformData = jsonDecode(response.body)!;
+
+      transformData.forEach((likeId, unlikeData) {
+        setState(() {
+          if (unlikeData['globalcomment_id'] == widget.globalCommentId) {
+            unliked = {"username_from_database": unlikeData['username']};
+            numberOfDislike
+                .add(unlikeData["globalcomment_id"] == widget.globalCommentId);
+            if (unlikeData['likedStatus'] == true) {
+              isInDatabaseLiked = true;
+            }
+          }
+        });
+      });
+    } catch (error) {
+      print(error);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("Oooops"),
+                content: const Text("Invalid Data"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text("OK"))
+                ],
+              ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(unliked);
     return InkWell(
       onTap: () async {
         SharedPreferences pref = await SharedPreferences.getInstance();
@@ -220,24 +275,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                               Text(numberOfLikes.length.toString())
                             ],
                           )),
-                      LikeButton(
-                        size: 20,
-                        circleColor: const CircleColor(
-                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color(0xff33b5e5),
-                          dotSecondaryColor: Color(0xff0099cc),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            Icons.thumb_down,
-                            // FontAwesome5.thumbs_down,
-                            color:
-                                isLiked ? Colors.deepPurpleAccent : Colors.grey,
-                            size: 20,
-                          );
-                        },
-                      ),
+                      IconButton(
+                          onPressed: () {
+                            commentDislikeButton();
+                          },
+                          icon: isNotLiked ||
+                                  unliked['username_from_database'] ==
+                                      widget.username
+                              ? const Icon(Icons.thumb_down)
+                              : const Icon(Icons.thumb_down_alt_outlined)),
                       Row(
                         children: [
                           IconButton(
