@@ -15,8 +15,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? useraccount = '';
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     void getUser() async {
       SharedPreferences pref = await SharedPreferences.getInstance();
       setState(() {

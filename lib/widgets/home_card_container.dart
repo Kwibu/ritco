@@ -40,7 +40,7 @@ class _HomeCardContainerState extends State<HomeCardContainer> {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Material(
-          elevation: 3,
+          // elevation: 3,
           borderRadius: BorderRadius.circular(20),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -48,8 +48,8 @@ class _HomeCardContainerState extends State<HomeCardContainer> {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color.fromARGB(255, 1, 180, 76),
-                    Color.fromARGB(255, 109, 187, 7),
+                    Color.fromARGB(144, 1, 180, 37),
+                    Color.fromARGB(108, 2, 187, 2),
                   ],
                   begin: FractionalOffset(0.0, 0.0),
                   end: FractionalOffset(1.0, 0.0),

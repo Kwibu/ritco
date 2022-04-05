@@ -6,6 +6,7 @@ import 'package:ritco_app/screens/chosen_screen.dart';
 import 'package:ritco_app/screens/getting_started.dart';
 import 'package:ritco_app/screens/home_screen.dart';
 import 'package:ritco_app/screens/login_screen.dart';
+import 'package:ritco_app/screens/message_screen.dart';
 import 'package:ritco_app/screens/taking_survey.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,12 +37,12 @@ class _MyAppState extends State<MyApp> {
     print(username);
 
     dashboardChoosen() {
-      var routeName = '';
+      var routeName = '/login';
       if (username != null) {
         return routeName = "/home-screen";
       }
 
-      if (username == null) {
+      if (username == null || username == '') {
         return routeName = "/getting-Started";
       }
       return routeName;
@@ -54,9 +55,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // print(routeNameGlobal);
     MaterialColor primeColor = MaterialColor(0xFF7CB211, color);
-    // MaterialColor accentColor = MaterialColor(0xFF7CB211, color);
+
     return MaterialApp(
       title: 'Ritco Surveys',
       debugShowCheckedModeBanner: false,
@@ -65,11 +65,13 @@ class _MyAppState extends State<MyApp> {
       ),
       home: ChosenScreen(routeNameGlobal),
       routes: {
+        // '/'
         "/getting-Started": (context) => const GettingStartedScreen(),
         "/getting-started-signup": (context) => const SignUpStarted(),
         "/sign-up-credetials": (context) => const FinishingSignUp(),
         '/login': (context) => const Login(),
         "/home-screen": (context) => const HomeScreen(),
+        "/message-screen": (context) => const MessageScreen(),
         "/survey-details-answers": (context) => const SurveyQuestionaire()
       },
     );

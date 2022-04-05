@@ -16,76 +16,90 @@ class _LoginState extends State<Login> {
   var isLoading = false;
 
   @override
+  void initState() {
+    // deleteUserName();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _form = GlobalKey<FormState>();
     var _loginDetails = const LoginModel(email: "", password: "");
     // ignore: non_constant_identifier_names
     Future<void> loginButton_handler() async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
       var validateForm = _form.currentState!.validate();
       _form.currentState!.save();
 
-      void gotToDashboard(user, dashboardRoute) async {
-        if (user["data"]['access_token'] != null) {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          await pref.setString("token", user["data"]['access_token']);
-          final username = await pref.setString(
-              'username', user["data"]["user_details"]["user_name"]);
-
-          if (username) {
-            await Navigator.of(context)
-                .pushReplacementNamed(dashboardRoute, arguments: {
-              "username": user['data']["user_details"]["user_name"],
-              "role": user['data']["user_details"]["role"],
-              "token": user["data"]['access_token']
-            });
-          }
-        }
-      }
-
-      if (validateForm) {
+      try {
         setState(() {
           isLoading = true;
         });
-        await http
-            .post(
-                Uri.parse(
-                    'https://identitytoolkit.googleapis.com/v1/accounts:signIn?key=AIzaSyBaEmrUzXNMNPv7khL5ybs18_XE1PhfsW8'),
-                body: ({
-                  "email": _loginDetails.email,
-                  "password": _loginDetails.password
-                }))
-            .then((response) async {
-          var user = jsonDecode(response.body);
-          if (user['data']['user_details']['role'] == 'company') {
-            gotToDashboard(user, '/landlord_dashboard');
-          }
-          if (user['data']['user_details']['role'] == 'tenant') {
-            gotToDashboard(user, '/tenant_dashboard');
-          }
+        if (validateForm) {
+          setState(() {
+            isLoading = true;
+          });
+          var response = await http.post(
+              Uri.parse(
+                  'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBaEmrUzXNMNPv7khL5ybs18_XE1PhfsW8'),
+              body: json.encode({
+                "email": _loginDetails.email.toString(),
+                "password": _loginDetails.password.toString(),
+                "returnSecureToken": true
+              }));
+
+          var userData = await json.decode(response.body)!;
+          print(userData);
 
           setState(() {
             isLoading = false;
           });
-        }).catchError((onError) {
-          print(onError);
+
+          await pref.setString("username", userData['displayName']);
+          await pref.setString("useraccount", userData['email']!);
+          // await pref.setString("firstname", userData['firstName']!);
+          // await pref.setString("lastname", userData['lastName']!);
+
+          await Navigator.of(context).pushReplacementNamed('/home-screen');
           setState(() {
             isLoading = false;
           });
-          showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                    title: const Text("Oooops"),
-                    content: const Text(
-                        "Invalid Credentials or check your internet connection"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                          child: const Text("OK"))
-                    ],
-                  ));
+
+          if (userData['errors']['message'] != null) {
+            showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                      title: const Text("Oooops"),
+                      content: Text(userData['error']['message']),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text("OK"))
+                      ],
+                    ));
+          }
+        }
+      } catch (error) {
+        setState(() {
+          isLoading = false;
         });
+        print(error);
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: const Text("Oooops"),
+                  content: const Text(
+                      "Invalid Credentials or check your internet connection"),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text("OK"))
+                  ],
+                ));
       }
     }
 

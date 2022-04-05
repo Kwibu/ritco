@@ -84,7 +84,8 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
             "surveyDescription": surveyData['surveyDescription'],
             "surveyQuestions": surveyData['surveyQuestions'],
             "userEmail": surveyData['userEmail'],
-            "answers": surveyData['answers']
+            "answers": surveyData['answers'],
+            "createdDTime": DateTime.now(),
           });
         });
       });
