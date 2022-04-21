@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ritco_app/screens/comments_screenL.dart';
 import 'package:ritco_app/screens/profile_screen.dart';
@@ -5,6 +6,7 @@ import 'package:ritco_app/widgets/home_card_container.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     getUserCredentials();
   }
+
+  final Stream<QuerySnapshot> surveys =
+      FirebaseFirestore.instance.collection('surveys').snapshots();
 
   int selectedIndex = 0;
 
@@ -95,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget homeScreenWidget(BuildContext context) {
+    // print(surveys!);
     return SingleChildScrollView(
       child: Container(
         margin: const EdgeInsets.only(
@@ -159,10 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const Text(
               "Try to fill survey accordingly how you feed about our company it will help us to manage any problem you have ",
-              // textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, height: 1.5),
             ),
-
             _services.isEmpty
                 ? Container(
                     height: MediaQuery.of(context).size.height * 0.5,
@@ -178,6 +182,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             _services[index]['surveyDescription'],
                             _services[index]['id'],
                             "assets/illustrations/employee.png")),
+
+            Container(
+              // height: 300,
+              child: StreamBuilder<QuerySnapshot>(
+                  // initialData: 'Initial data',
+                  stream: surveys,
+                  builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    var val = [];
+                    if (snapshot.hasError) {}
+                    if (snapshot.hasData) {
+                      val = snapshot.data!.docs;
+
+                      return ListView.builder(
+                          primary: true,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: val.length,
+                          itemBuilder: (BuildContext context, int index) =>
+                              HomeCardContainer(
+                                  val[index]['surveyTitle'],
+                                  val[index]['surveyDescription'],
+                                  val[index].id,
+                                  "assets/illustrations/employee.png"));
+                    }
+
+                    return Text(val[0]['surveyQuestions']);
+                  })),
+            )
           ],
         ),
       ),

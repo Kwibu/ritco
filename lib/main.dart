@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ritco_app/colors/colorswitch.dart';
 import 'package:ritco_app/screens/GettingStartedScreens/finishing_password.dart';
@@ -9,8 +10,17 @@ import 'package:ritco_app/screens/login_screen.dart';
 import 'package:ritco_app/screens/message_screen.dart';
 import 'package:ritco_app/screens/taking_survey.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "firebase_options.dart";
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
+
+// Ideal time to initialize
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(const MyApp());
 }
 
@@ -34,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final String? username = pref.getString('username');
 
-    print(username);
+    // final user = FirebaseAuth.instance.currentUser;
 
     dashboardChoosen() {
       var routeName = '/login';
