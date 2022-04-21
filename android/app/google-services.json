@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "341782083749",
+    "firebase_url": "https://ritco-app-default-rtdb.firebaseio.com",
+    "project_id": "ritco-app",
+    "storage_bucket": "ritco-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341782083749:android:8116d8ff395bfe117a754c",
+        "android_client_info": {
+          "package_name": "com.example.ritco_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341782083749-8pblg2mgm683tnmve39ougjav0fof6jj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZu_2bS4g7JzQoOREaT2LJHyN5VvB4F5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341782083749-8pblg2mgm683tnmve39ougjav0fof6jj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
