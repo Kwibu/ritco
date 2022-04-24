@@ -237,9 +237,9 @@ class _LoginState extends State<Login> {
                                   child: isLoading == false
                                       ? const Padding(
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 14),
+                                              vertical: 16),
                                           child: Text(
-                                            "Login",
+                                            "LOGIN",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: 'Poppins'),

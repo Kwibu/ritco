@@ -100,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget homeScreenWidget(BuildContext context) {
-    // print(surveys!);
     return SingleChildScrollView(
       child: Container(
         margin: const EdgeInsets.only(
@@ -216,10 +215,182 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget homeScreenUpdated(BuildContext context) {
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height,
+            color: const Color.fromRGBO(169, 195, 74, 1),
+            padding: const EdgeInsets.only(top: 40),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hi $userName !",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const Text("How are you doing today?"),
+                      ],
+                    ),
+                    const Icon(Icons.star_outline),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text(
+                            "Surveys",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          Text("3 surveys")
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    height: 40,
+                                    width: 40,
+                                    child: Image.network(
+                                      "https://www.pngitem.com/pimgs/m/258-2585236_zoho-survey-zoho-survey-logo-hd-png-download.png",
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "Transportation",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.stairs_outlined),
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 8),
+                                              child: const Text(
+                                                  "Tell us About Drivers "))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromARGB(255, 24, 68, 156),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 35,
+                                width: 40,
+                                child: const Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Column(
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Text(
+                                        "12",
+                                        style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Text(
+                                      "Questions",
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon:
+                                            const Icon(Icons.comment_outlined))
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.75,
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 233, 233, 233),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25))),
+              )),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> _page = [
-      homeScreenWidget(context),
+      homeScreenUpdated(context),
       const CommentScreen(),
       const ProfileScreen(),
     ];
