@@ -34,85 +34,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
       alignment: Alignment.center,
       children: [
         Container(
+            color: Colors.white,
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Positioned(
-              top: 0,
-              child: Container(
-                padding: const EdgeInsets.only(top: 24),
-                constraints: const BoxConstraints(minHeight: 200),
-                color: Colors.lightGreen,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: const Icon(Icons.arrow_back)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Text(
-                                      username!.toUpperCase(),
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Positioned(
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 64),
+                    constraints: const BoxConstraints(minHeight: 200),
+                    color: Colors.lightGreen,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // IconButton(
+                          //     onPressed: () {
+                          //       Navigator.of(context).pop();
+                          //     },
+                          //     icon: const Icon(Icons.arrow_back)),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 28.0),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        child: Icon(
-                                          Icons.email,
-                                          color: Colors.white,
-                                          size: 12,
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: Text(
+                                          username!.toUpperCase(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          useraccount!,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
+                                      Row(
+                                        children: [
+                                          const Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 8.0),
+                                            child: Icon(
+                                              Icons.email,
+                                              color: Colors.white,
+                                              size: 12,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              useraccount!,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ]),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 40),
-              child: ListView.builder(
-                  primary: true,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: userList.length,
-                  itemBuilder: (context, index) => UserTaskWidget(
-                      userList[index].id,
-                      userList[index].icon,
-                      userList[index].name)),
-            ),
-          ],
-        )),
+                                )
+                              ],
+                            ),
+                          )
+                        ]),
+                  ),
+                ),
+                Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.only(top: 40),
+                  child: ListView.builder(
+                      primary: true,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: userList.length,
+                      itemBuilder: (context, index) => UserTaskWidget(
+                          userList[index].id,
+                          userList[index].icon,
+                          userList[index].name)),
+                ),
+              ],
+            )),
         Positioned(
             width: MediaQuery.of(context).size.width,
             top: 160,

@@ -200,121 +200,136 @@ class _CommentWidgetState extends State<CommentWidget> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.only(bottom: 10, top: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child:
-                    CircleAvatar(child: Text(widget.postTitle.substring(0, 2))),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.postTitle,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  Text(
-                    widget.postSubTitle,
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                ],
-              ),
-            ]),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                widget.postDescription,
-                style: const TextStyle(height: 1.5),
-              ),
-            ),
-            Column(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: Material(
+          elevation: 2,
+          borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20)),
+          child: Container(
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20))),
+            padding:
+                const EdgeInsets.only(bottom: 10, top: 10, left: 10, right: 10),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: comments.isEmpty
-                      ? null
-                      : Text(
-                          "View all Comments (${comments.length.toString()})",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
-                ),
-              ],
-            ),
-            Container(
-              width: 200,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+                Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: CircleAvatar(
+                        child: Text(widget.postTitle.substring(0, 2))),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                          padding: const EdgeInsets.only(right: 13.0),
-                          child: Row(
+                      Text(
+                        widget.postTitle,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(
+                        widget.postSubTitle,
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ],
+                  ),
+                ]),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    widget.postDescription,
+                    style: const TextStyle(height: 1.5),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: comments.isEmpty
+                          ? null
+                          : Text(
+                              "View all Comments (${comments.length.toString()})",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                    ),
+                  ],
+                ),
+                Container(
+                  width: 200,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(right: 13.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        likeButtonHandler();
+                                      },
+                                      // ignore: unrelated_type_equality_checks
+                                      icon: isLiked ||
+                                              likes['username_from_database'] ==
+                                                  widget.username
+                                          ? const Icon(
+                                              Icons.favorite,
+                                              color: Colors.red,
+                                            )
+                                          : const Icon(
+                                              Icons.favorite_border_outlined)),
+                                  Text(numberOfLikes.length.toString())
+                                ],
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                commentDislikeButton();
+                              },
+                              icon: isNotLiked ||
+                                      unliked['username_from_database'] ==
+                                          widget.username
+                                  ? const Icon(Icons.thumb_down)
+                                  : const Icon(Icons.thumb_down_alt_outlined)),
+                          Row(
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    likeButtonHandler();
+                                    Navigator.of(context)
+                                        .pushNamed('/mesage-screen');
                                   },
-                                  // ignore: unrelated_type_equality_checks
-                                  icon: isLiked ||
-                                          likes['username_from_database'] ==
-                                              widget.username
-                                      ? const Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                        )
-                                      : const Icon(
-                                          Icons.favorite_border_outlined)),
-                              Text(numberOfLikes.length.toString())
+                                  icon: const Icon(
+                                    Icons.comment,
+                                    size: 20,
+                                    color: Colors.grey,
+                                  )),
+                              Text(
+                                comments.length.toString(),
+                                style: const TextStyle(color: Colors.grey),
+                              )
                             ],
-                          )),
-                      IconButton(
-                          onPressed: () {
-                            commentDislikeButton();
-                          },
-                          icon: isNotLiked ||
-                                  unliked['username_from_database'] ==
-                                      widget.username
-                              ? const Icon(Icons.thumb_down)
-                              : const Icon(Icons.thumb_down_alt_outlined)),
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed('/mesage-screen');
-                              },
-                              icon: const Icon(
-                                Icons.comment,
-                                size: 20,
-                                color: Colors.grey,
-                              )),
-                          Text(
-                            comments.length.toString(),
-                            style: const TextStyle(color: Colors.grey),
                           )
                         ],
-                      )
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8.0),
+                //   child: Container(
+                //     color: Colors.black38,
+                //     height: 1,
+                //   ),
+                // )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Container(
-                color: Colors.black38,
-                height: 1,
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

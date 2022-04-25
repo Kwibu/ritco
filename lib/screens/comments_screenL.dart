@@ -84,6 +84,11 @@ class _CommentScreenState extends State<CommentScreen> {
   Widget build(BuildContext context) {
     print(likes);
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text("Comments"),
+        foregroundColor: Colors.white,
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
@@ -91,28 +96,28 @@ class _CommentScreenState extends State<CommentScreen> {
           padding: const EdgeInsets.only(top: 30, left: 10, right: 10),
           child: Column(
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: Image.network(
-                        "https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 120.0),
-                    child: Row(
-                      children: const [
-                        Text(
-                          'RITCO',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(74, 48, 109, 1)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     CircleAvatar(
+              //       child: Image.network(
+              //           "https://media.licdn.com/media/AAYQAQSOAAgAAQAAAAAAAB-zrMZEDXI2T62PSuT6kpB6qg.png"),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.only(left: 120.0),
+              //       child: Row(
+              //         children: const [
+              //           Text(
+              //             'RITCO',
+              //             style: TextStyle(
+              //                 fontSize: 16,
+              //                 fontWeight: FontWeight.bold,
+              //                 color: Color.fromRGBO(74, 48, 109, 1)),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 8.0,
@@ -120,14 +125,14 @@ class _CommentScreenState extends State<CommentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Comments",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    // const Align(
+                    //   alignment: Alignment.center,
+                    //   child: Text(
+                    //     "Comments",
+                    //     style: TextStyle(
+                    //         fontSize: 20, fontWeight: FontWeight.bold),
+                    //   ),
+                    // ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: isLoading

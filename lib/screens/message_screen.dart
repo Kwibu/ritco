@@ -149,94 +149,161 @@ class _MessageScreenState extends State<MessageScreen> {
     }
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 241, 241, 241),
+      appBar: AppBar(
+        title: const Text("Comments"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: Stack(
         children: [
           Container(
-            constraints: const BoxConstraints(minHeight: 100),
-            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+            constraints: const BoxConstraints(
+              minHeight: 100,
+            ),
             width: double.infinity,
             child: isLoading
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CommentWidget(globalCommentId!, username!, title,
-                          subtitle, content),
-                      comments.isEmpty
-                          ? Container()
-                          : ListView.builder(
-                              primary: true,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: comments.length,
-                              itemBuilder: (context, index) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 3.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 2.0),
-                                          child: Text(
-                                            comments[index].username,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 4.0),
-                                          child: Text(
-                                              comments[index].messageContent),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
-                    ],
+                : Container(
+                    // margin: const EdgeInsets.only(, right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CommentWidget(globalCommentId!, username!, title,
+                            subtitle, content),
+                        comments.isEmpty
+                            ? Container()
+                            : SingleChildScrollView(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.6,
+                                  child: ListView.builder(
+                                      primary: true,
+                                      shrinkWrap: true,
+                                      itemCount: comments.length,
+                                      itemBuilder: (context, index) => Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 3,
+                                                      horizontal: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8.0),
+                                                    child: CircleAvatar(
+                                                      maxRadius: 16,
+                                                      child: Text(
+                                                          comments[index]
+                                                              .username
+                                                              .substring(0, 1)),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 12.0,
+                                                        horizontal: 10),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  bottom: 2.0),
+                                                          child: Text(
+                                                            comments[index]
+                                                                .username,
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 4.0),
+                                                          child: Text(comments[
+                                                                  index]
+                                                              .messageContent),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )),
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
           ),
           Positioned(
               width: MediaQuery.of(context).size.width,
               bottom: 0,
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: Row(
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        width: MediaQuery.of(context).size.width * 0.68,
-                        child: TextField(
-                          controller: _textEditingController,
-                          onChanged: commentValue,
-                          // maxLines: 3,
-                          // onSubmitted: ,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            border: OutlineInputBorder(),
-                            hintText: 'Comment',
-                          ),
+              child: Container(
+                color: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Row(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width * 0.68,
+                      child: TextField(
+                        controller: _textEditingController,
+                        onChanged: commentValue,
+                        // maxLines: 3,
+                        // onSubmitted: ,
+                        decoration: const InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                          border: OutlineInputBorder(),
+                          hintText: 'Comment',
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: OutlinedButton(
-                              onPressed: addCommentHandler,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 18.0),
-                                child: Text("Post"),
-                              )),
-                        ),
-                      )
-                    ],
-                  )))
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: OutlinedButton(
+                            onPressed: addCommentHandler,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 18.0),
+                              child: Text("Post"),
+                            )),
+                      ),
+                    )
+                  ],
+                ),
+              ))
         ],
       ),
     );
