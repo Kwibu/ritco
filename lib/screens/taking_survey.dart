@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:ritco_app/models/answer.dart';
 import 'package:ritco_app/models/questionModel.dart';
 import 'package:ritco_app/widgets/app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
 class SurveyQuestionaire extends StatefulWidget {
@@ -54,6 +56,9 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
     username = pref.getString('username')!;
     _getSurveyInformationHandler();
   }
+
+  final Stream<QuerySnapshot> surveys =
+      FirebaseFirestore.instance.collection('surveys').snapshots();
 
   commentHandler(value) {
     setState(() {

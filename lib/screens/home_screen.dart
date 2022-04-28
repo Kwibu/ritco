@@ -322,6 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 val[index]['surveyTitle'],
                                                 val[index]['surveyDescription'],
                                                 val[index].id,
+                                                userName,
                                                 val[index]['surveyQuestions']
                                                     .length
                                                     .toString()));
@@ -388,112 +389,122 @@ class SurveyItemWidget extends StatelessWidget {
   String description;
   String id;
   String questionLength;
+  String username;
 
   SurveyItemWidget(
     this.title,
     this.description,
     this.id,
+    this.username,
     this.questionLength, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    height: 40,
-                    width: 40,
-                    child: Image.network(
-                      "https://www.pngitem.com/pimgs/m/258-2585236_zoho-survey-zoho-survey-logo-hd-png-download.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.stairs_outlined),
-                          Container(
-                              margin: const EdgeInsets.only(left: 8),
-                              child: Text(description))
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 24, 68, 156),
-                    borderRadius: BorderRadius.circular(10)),
-                height: 35,
-                width: 40,
-                child: const Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          SizedBox(
-            child: Row(
+    return InkWell(
+      onTap: () async {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setString("surveyId", id);
+        Navigator.of(context).pushNamed("/survey-details-answers",
+            arguments: {"surveyId": id, "username": username});
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Column(
+                Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Text(
-                        questionLength,
-                        style: const TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      height: 40,
+                      width: 40,
+                      child: Image.network(
+                        "https://www.pngitem.com/pimgs/m/258-2585236_zoho-survey-zoho-survey-logo-hd-png-download.png",
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    const Text(
-                      "Questions",
-                      textAlign: TextAlign.start,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.stairs_outlined),
+                            Container(
+                                margin: const EdgeInsets.only(left: 8),
+                                child: Text(description))
+                          ],
+                        )
+                      ],
                     ),
                   ],
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.comment_outlined))
-                  ],
+                Container(
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 24, 68, 156),
+                      borderRadius: BorderRadius.circular(10)),
+                  height: 35,
+                  width: 40,
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                  ),
                 )
               ],
             ),
-          )
-        ],
+            const SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          questionLength,
+                          style: const TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const Text(
+                        "Questions",
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.comment_outlined))
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
