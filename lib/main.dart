@@ -6,6 +6,7 @@ import 'package:ritco_app/screens/GettingStartedScreens/sign_up_started.dart';
 import 'package:ritco_app/screens/chosen_screen.dart';
 import 'package:ritco_app/screens/getting_started.dart';
 import 'package:ritco_app/screens/home_screen.dart';
+import 'package:ritco_app/screens/landing_services.dart';
 import 'package:ritco_app/screens/login_screen.dart';
 import 'package:ritco_app/screens/message_screen.dart';
 import 'package:ritco_app/screens/taking_survey.dart';
@@ -49,7 +50,7 @@ class _MyAppState extends State<MyApp> {
     dashboardChoosen() {
       var routeName = '/login';
       if (username != null) {
-        return routeName = "/home-screen";
+        return routeName = "/landing-services";
       }
 
       if (username == null || username == '') {
@@ -82,7 +83,8 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const Login(),
         "/home-screen": (context) => const HomeScreen(),
         "/message-screen": (context) => const MessageScreen(),
-        "/survey-details-answers": (context) => const SurveyQuestionaire()
+        "/survey-details-answers": (context) => const SurveyQuestionaire(),
+        "/landing-services": (context) => const ServicesProvider(),
       },
     );
   }

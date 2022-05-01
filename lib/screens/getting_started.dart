@@ -18,45 +18,64 @@ class GettingStartedScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Welcome to RITCO Bus Service Surveys",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: const Text(
-                        "RITCO survey helps you us get any services that not work for you as you wish",
-                        style: TextStyle(height: 1.5),
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: MediaQuery.of(context).size.height * .1,
+                  // ),
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 20),
                     width: double.infinity,
                     child: Image.asset(
-                      "assets/illustrations/istockphoto-1312644983-612x612.jpg",
+                      "assets/illustrations/ritco_ill.jpeg",
                       fit: BoxFit.cover,
                     ),
-                  )
+                  ),
+                  Center(
+                    child: const Text(
+                      "Help us to improve our services",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .01,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1.0),
+                    child: Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: const Text(
+                          "We use surveys to find out attitudes and reactions to measure client satisfaction, this helps us to add credibility to our serveices",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.only(bottom: 30),
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed("/getting-started-signup");
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      "Get Started",
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/getting-started-signup');
+                },
+                //navigate to signup screen
+                child: Container(
+                  // padding: const EdgeInsets.only(bottom: 30),
+                  width: double.infinity,
+
+                  decoration: const BoxDecoration(
+                      color: Colors.lightGreen,
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                  child: const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        "Get Started",
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

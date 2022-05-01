@@ -83,7 +83,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 20.0),
                             child: Text(
-                                "Fill your all information about you inorder to complete your account"),
+                                "Fill out information about you to create your account"),
                           ),
                           Column(
                             children: [
@@ -94,7 +94,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                           borderRadius:
-                                              BorderRadius.circular(5)),
+                                              BorderRadius.circular(50)),
                                       labelText: 'Enter your first name',
                                       labelStyle: const TextStyle(fontSize: 12),
                                       suffixIcon: const Icon(Icons.account_box),
@@ -129,7 +129,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                                       decoration: InputDecoration(
                                           border: OutlineInputBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(5)),
+                                                  BorderRadius.circular(50)),
                                           labelText: 'Enter last name',
                                           suffixIcon:
                                               const Icon(Icons.account_box),
@@ -186,7 +186,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                                                 decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            5),
+                                                            50),
                                                     color: Colors.white12,
                                                     border: Border.all(
                                                         color: Colors.black38)),
@@ -250,7 +250,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                                                   color: Colors.black45,
                                                   style: BorderStyle.solid),
                                               borderRadius:
-                                                  BorderRadius.circular(5)),
+                                                  BorderRadius.circular(50)),
                                           padding: const EdgeInsets.only(
                                               left: 10,
                                               top: 12,
@@ -301,7 +301,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Poppins',
-                                      fontSize: 18),
+                                      fontSize: 16),
                                 ),
                               )
                             : const SizedBox(
@@ -313,7 +313,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
                               ),
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
+                                borderRadius: BorderRadius.circular(50)),
                             primary: Theme.of(context).primaryColor),
                       ),
                     ),

@@ -1,3 +1,5 @@
+// import 'dart:html';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ritco_app/screens/comments_screenL.dart';
@@ -99,122 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget homeScreenWidget(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.only(
-          top: 50,
-          right: 20,
-          left: 20,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hi $userName !",
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const Text("How are you doing today?"),
-                  ],
-                ),
-                const Icon(Icons.star_outline),
-              ],
-            ),
-            Stack(children: [
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                child: Image.asset("assets/illustrations/Group 13.png"),
-              ),
-              Positioned(
-                width: MediaQuery.of(context).size.width * 0.5,
-                top: 30,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8, left: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          "Transport yourself and your assets conveniently",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Text("Give your feedback"),
-                    ],
-                  ),
-                ),
-              )
-            ]),
-            //? Adding Services
-            const Padding(
-              padding: EdgeInsets.only(bottom: 15.0),
-              child: Text(
-                "Services",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Text(
-              "Try to fill survey accordingly how you feed about our company it will help us to manage any problem you have ",
-              style: TextStyle(fontSize: 16, height: 1.5),
-            ),
-            _services.isEmpty
-                ? Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    child: const Center(child: CircularProgressIndicator()))
-                : ListView.builder(
-                    primary: true,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _services.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        HomeCardContainer(
-                            _services[index]['surveyTitle'],
-                            _services[index]['surveyDescription'],
-                            _services[index]['id'],
-                            "assets/illustrations/employee.png")),
-
-            Container(
-              child: StreamBuilder<QuerySnapshot>(
-                  // initialData: 'Initial data',
-                  stream: surveys,
-                  builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    var val = [];
-                    if (snapshot.hasError) {}
-                    if (snapshot.hasData) {
-                      val = snapshot.data!.docs;
-
-                      return ListView.builder(
-                          primary: true,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: val.length,
-                          itemBuilder: (BuildContext context, int index) =>
-                              HomeCardContainer(
-                                  val[index]['surveyTitle'],
-                                  val[index]['surveyDescription'],
-                                  val[index].id,
-                                  "assets/illustrations/employee.png"));
-                    }
-
-                    return Text(val[0]['surveyQuestions']);
-                  })),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget homeScreenUpdated(BuildContext context) {
+  Widget homeScreenUpdated(BuildContext context, serviceID) {
+    var surveyCount = 0;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -224,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25), topRight: Radius.circular(25)),
             ),
-            height: 180,
+            // height: 180,
             padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
             child: Column(
               children: [
@@ -235,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hi $userName !",
+                          "Surveys",
                           style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -278,13 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
                           "Surveys",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                        Text("3 surveys")
+                        //iniput survey count;
+                        // Text("surveys")
                       ],
                     ),
                   ),
@@ -308,7 +197,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               var val = [];
                               if (snapshot.hasError) {}
                               if (snapshot.hasData) {
-                                val = snapshot.data!.docs;
+                                for (var survey in snapshot.data!.docs) {
+                                  if (survey['serviceID'] ==
+                                      serviceID['serviceId']) {
+                                    val.add(survey);
+                                  }
+                                }
+
+                                // val = snapshot.data!.docs;
+
+                                surveyCount = val.length;
 
                                 return ListView.builder(
                                     primary: true,
@@ -360,26 +258,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _page = [
-      homeScreenUpdated(context),
-      const CommentScreen(),
-      const ProfileScreen(),
-    ];
+    final args = ModalRoute.of(context)!.settings.arguments;
+    print('Args  $args');
+    // final List<Widget> _page = [
+    //   homeScreenUpdated(context),
+    //   const CommentScreen(),
+    //   const ProfileScreen(),
+    // ];
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(169, 195, 74, 1),
-      body: _page[selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectedPage,
-        currentIndex: selectedIndex,
-        fixedColor: Colors.black,
-        unselectedItemColor: Colors.black54,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feeds'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), label: 'Account'),
-        ],
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(169, 195, 74, 1),
+        elevation: 0.2,
+        title: Text(
+          'Surveys',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
+      backgroundColor: const Color.fromRGBO(169, 195, 74, 1),
+      body: homeScreenUpdated(context, args),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   onTap: _selectedPage,
+      //   currentIndex: selectedIndex,
+      //   fixedColor: Colors.black,
+      //   unselectedItemColor: Colors.black54,
+      //   items: const [
+      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      //     BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feeds'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.account_circle), label: 'Account'),
+      //   ],
+      // ),
     );
   }
 }
@@ -447,25 +355,20 @@ class SurveyItemWidget extends StatelessWidget {
                           children: [
                             const Icon(Icons.stairs_outlined),
                             Container(
+                                width: MediaQuery.of(context).size.width * .55,
                                 margin: const EdgeInsets.only(left: 8),
-                                child: Text(description))
+                                child: Text(
+                                  description,
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                ))
                           ],
                         )
                       ],
                     ),
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 24, 68, 156),
-                      borderRadius: BorderRadius.circular(10)),
-                  height: 35,
-                  width: 40,
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                  ),
-                )
               ],
             ),
             const SizedBox(
@@ -497,7 +400,7 @@ class SurveyItemWidget extends StatelessWidget {
                     children: [
                       IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.comment_outlined))
+                          icon: const Icon(Icons.arrow_forward))
                     ],
                   )
                 ],

@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
 class SurveyQuestionaire extends StatefulWidget {
-  const SurveyQuestionaire({Key? key}) : super(key: key);
+  const SurveyQuestionaire({Key? key});
 
   @override
   _SurveyQuestionaireState createState() => _SurveyQuestionaireState();
@@ -35,7 +35,7 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
 
   List<String> choices = [
     //Arranging index following modulo 5,
-    "Very  dissatisfied",
+    "Very dissatisfied",
     "Very Satisfied",
     "Somewhat Satisfied",
     "Neither Satisfied nor Satisfied",
