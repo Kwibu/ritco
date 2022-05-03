@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getUserCredentials();
   }
 
   final Stream<QuerySnapshot> surveys =
@@ -40,67 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
     print(selectedIndex);
   }
 
-  void getUserCredentials() async {
-    _getAllSurveyInformationHandler();
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    final String? username = pref.getString('firstname');
-    setState(() {
-      userName = username.toString();
-    });
-  }
-
-  void _getAllSurveyInformationHandler() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      var response = await http.get(Uri.parse(
-          'https://ritco-app-default-rtdb.firebaseio.com/surveys.json'));
-
-      var transformData = jsonDecode(response.body)!;
-      if (response.statusCode == 200) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-
-      final loadedSurvey = [];
-      transformData.forEach((surveyId, surveyData) {
-        setState(() {
-          loadedSurvey.add({
-            "id": surveyId,
-            "surveyTitle": surveyData['surveyTitle'],
-            "surveyDescription": surveyData['surveyDescription'],
-            "surveyQuestions": surveyData['surveyQuestions'],
-            "userEmail": surveyData['userEmail'],
-          });
-        });
-      });
-
-      setState(() {
-        _services.addAll(loadedSurvey);
-      });
-    } catch (error) {
-      setState(() {
-        isLoading = false;
-      });
-      print(error);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: const Text("Oooops"),
-                content: const Text("Invalid Data"),
-                actions: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      child: const Text("OK"))
-                ],
-              ));
-    }
-  }
-
   Widget homeScreenUpdated(BuildContext context, serviceID) {
     var surveyCount = 0;
     return SingleChildScrollView(
@@ -113,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   topLeft: Radius.circular(25), topRight: Radius.circular(25)),
             ),
             // height: 180,
-            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
             child: Column(
               children: [
                 Row(
@@ -123,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Surveys",
+                          "Taking Survey",
                           style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -142,13 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    const Icon(Icons.star_outline),
+                    // const Icon(Icons.star_outline),
                   ],
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    "Try to fill survey accordingly how you feed about our company it will help us to manage any problem you have ",
+                    "Select a survey where you would like to give us feedback",
                     style: TextStyle(
                         fontSize: 16, height: 1.5, color: Colors.white),
                   ),
@@ -223,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 userName,
                                                 val[index]['surveyQuestions']
                                                     .length
-                                                    .toString()));
+                                                    .toString(), 
+                                                    val[index]));
                               }
 
                               return const Center(
@@ -298,13 +237,16 @@ class SurveyItemWidget extends StatelessWidget {
   String id;
   String questionLength;
   String username;
+  var surveyData;
 
   SurveyItemWidget(
     this.title,
     this.description,
     this.id,
     this.username,
-    this.questionLength, {
+    this.questionLength, 
+    this.surveyData,
+    {
     Key? key,
   }) : super(key: key);
 
@@ -312,10 +254,8 @@ class SurveyItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        await pref.setString("surveyId", id);
-        Navigator.of(context).pushNamed("/survey-details-answers",
-            arguments: {"surveyId": id, "username": username});
+        Navigator.of(context)
+            .pushNamed("/survey-details-answers", arguments: {"surveyId": id, "surveyData":surveyData});
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -335,8 +275,8 @@ class SurveyItemWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10)),
                       height: 40,
                       width: 40,
-                      child: Image.network(
-                        "https://www.pngitem.com/pimgs/m/258-2585236_zoho-survey-zoho-survey-logo-hd-png-download.png",
+                      child: Image.asset(
+                        'assets/illustrations/employee.png',
                         fit: BoxFit.cover,
                       ),
                     ),

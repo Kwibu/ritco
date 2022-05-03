@@ -18,22 +18,24 @@ class GettingStartedScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * .1,
-                  // ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    width: double.infinity,
-                    child: Image.asset(
-                      "assets/illustrations/ritco_ill.jpeg",
-                      fit: BoxFit.cover,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .1,
+                  ),
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      width: MediaQuery.of(context).size.width * .60,
+                      child: Image.asset(
+                        "assets/illustrations/ritco_ill.jpeg",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Center(
                     child: const Text(
                       "Help us to improve our services",
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                   SizedBox(
@@ -47,7 +49,7 @@ class GettingStartedScreen extends StatelessWidget {
                         child: const Text(
                           "We use surveys to find out attitudes and reactions to measure client satisfaction, this helps us to add credibility to our serveices",
                           textAlign: TextAlign.center,
-                          style: TextStyle(),
+                          style: TextStyle(fontSize: 10),
                         ),
                       ),
                     ),

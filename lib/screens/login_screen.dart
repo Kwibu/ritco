@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
           // await pref.setString("firstname", userData['firstName']!);
           // await pref.setString("lastname", userData['lastName']!);
 
-          await Navigator.of(context).pushReplacementNamed('/home-screen');
+          await Navigator.of(context).pushReplacementNamed('/landing-services');
           setState(() {
             isLoading = false;
           });

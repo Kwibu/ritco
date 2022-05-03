@@ -22,10 +22,7 @@ class DefaultFirebaseOptions {
     // ignore: missing_enum_constant_in_switch
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
@@ -51,14 +48,23 @@ class DefaultFirebaseOptions {
     measurementId: 'G-DDKXF5ZPMS',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBfLieathtQ-jxRVIHU0dbs3ILhtIV3klU',
-    appId: '1:341782083749:ios:093812b257a6120f7a754c',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyCZu_2bS4g7JzQoOREaT2LJHyN5VvB4F5E',
+    appId: '1:341782083749:android:8116d8ff395bfe117a754c',
     messagingSenderId: '341782083749',
     projectId: 'ritco-app',
     databaseURL: 'https://ritco-app-default-rtdb.firebaseio.com',
     storageBucket: 'ritco-app.appspot.com',
-    iosClientId: '341782083749-esrkfcrh0h7l9cvp8mhrdreei6cp71mf.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ritco',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBfLieathtQ-jxRVIHU0dbs3ILhtIV3klU',
+    appId: '1:341782083749:ios:d0291fa3d0527cbe7a754c',
+    messagingSenderId: '341782083749',
+    projectId: 'ritco-app',
+    databaseURL: 'https://ritco-app-default-rtdb.firebaseio.com',
+    storageBucket: 'ritco-app.appspot.com',
+    iosClientId: '341782083749-up44ru6t1gbq8btts7364ppbnojl2o0e.apps.googleusercontent.com',
+    iosBundleId: 'com.example.ritcoApp',
   );
 }

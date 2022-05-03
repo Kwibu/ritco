@@ -51,7 +51,8 @@ class _CommentScreenState extends State<CommentScreen> {
 
       transformData.forEach((surveyId, surveyData) {
         setState(() {
-          THREADS.add(Post(
+          THREADS.add(
+            Post(
               postId: surveyId,
               postTitle: surveyData["username"],
               postSubTitle: surveyData["userEmail"],
