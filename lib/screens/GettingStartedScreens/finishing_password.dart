@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+
+import 'package:ritco_app/services/data_manupilation.dart'
 import 'package:ritco_app/models/user_informations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -78,7 +80,16 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
               await pref.setString("firstname", firstName);
               await pref.setString("lastname", lastName);
               await pref.setString("useraccount", _loginDetails.email);
-              await Navigator.of(context).pushReplacementNamed('/home-screen');
+              RitcoAPI().setDoc('users', userData['localId'], {
+                'uid': userData['localId'],
+                'email': _loginDetails.email,
+                'firstname': firstName,
+                'lastname': lastName,
+                'gender': gender,
+                'age': age
+              });
+              await Navigator.of(context)
+                  .pushReplacementNamed('/landing-services');
               setState(() {
                 isLoading = false;
               });
