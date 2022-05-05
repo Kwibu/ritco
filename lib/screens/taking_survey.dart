@@ -36,10 +36,12 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
   List<String> choices = [
     //Arranging index following modulo 5,
     "Very disatisfied",
-    "Very Satisfied",
+    "Somewhat dissatisfied",
     "Somewhat Satisfied",
-    "Neither Satisfied nor Satisfied",
-    "Somewhat dissatisfied"
+    "Neither Satisfied nor disatisfied",
+    "Very Satisfied",
+  
+    
   ];
 
   console(args) => print(args);

@@ -30,7 +30,7 @@ class _SignUpStartedState extends State<SignUpStarted> {
         _userInformation = UserInformations(
             firstName: _userInformation.firstName,
             lastName: _userInformation.lastName,
-            age: currentDate,
+            age: currentDate.toString(),
             gender: _userInformation.gender);
       });
     }

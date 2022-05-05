@@ -3,10 +3,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import 'package:ritco_app/services/data_manupilation.dart'
+// import 'package:ritco_app/services/data_manupilation.dart'
 import 'package:ritco_app/models/user_informations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import '../../services/data_manupilation.dart';
 
 class FinishingSignUp extends StatefulWidget {
   const FinishingSignUp({Key? key}) : super(key: key);
