@@ -1,13 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+
+class RitcoUser {
+  final uid;
+  // final String name;
+
+  RitcoUser({
+    required this.uid,
+  });
+}
 
 class RitcoAPI {
   //initialize firestore
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   //create a collection ref
 
-  CollectionReference createCollectionRef({@required String?collectionPath}) {
+  CollectionReference createCollectionRef({@required String? collectionPath}) {
     return _firebaseFirestore.collection(collectionPath!);
   }
 
@@ -21,6 +32,27 @@ class RitcoAPI {
   }
 
   //reading data to firestor......
+
+  // authChanges() {
+  //   return _auth.authStateChanges().listen((User? user) {
+  //     if (user == null) {
+  //       print('User is currently signed out!');
+  //     } else {
+  //       return user.uid;
+  //     }
+  //   });
+  // }
+
+  //listen to auth changes about the user streams
+  RitcoUser firebaseUser(User? user) {
+    // ignore: unnecessary_null_comparison
+    return RitcoUser(uid: user!.uid);
+  }
+
+  //listen to auth changes
+  Stream<RitcoUser> get userChanges {
+    return _auth.authStateChanges().map(firebaseUser);
+  }
 
   //Users stream
   Stream<QuerySnapshot> get users {
@@ -48,9 +80,7 @@ class RitcoAPI {
 
   //individual coment stream
   Stream<DocumentSnapshot> commentStream({@required String? id}) {
-    return createCollectionRef(collectionPath: 'comments')
-        .doc(id)
-        .snapshots();
+    return createCollectionRef(collectionPath: 'comments').doc(id).snapshots();
   }
 
   //like a motivation
@@ -75,16 +105,14 @@ class RitcoAPI {
     String surveyId,
   ) async {
     try {
-      createCollectionRef(collectionPath: 'comments')
-          .doc()
-          .set({
-            'comments':{},
-            'created-at': DateTime.now(),
-            'created-by': uid,
-            'likes':{},
-            'survey-id': surveyId,
-            'thread': thread
-          });
+      createCollectionRef(collectionPath: 'comments').doc().set({
+        'comments': {},
+        'created-at': DateTime.now(),
+        'created-by': uid,
+        'likes': {},
+        'survey-id': surveyId,
+        'thread': thread
+      });
       return true;
     } catch (e) {
       print('failed to set a motivation');

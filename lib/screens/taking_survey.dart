@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ritco_app/models/answer.dart';
 import 'package:ritco_app/models/questionModel.dart';
+import 'package:ritco_app/services/data_manupilation.dart';
 import 'package:ritco_app/widgets/app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +41,6 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
     "Somewhat Satisfied",
     "Neither Satisfied nor disatisfied",
     "Very Satisfied",
-  
-    
   ];
 
   console(args) => print(args);
@@ -191,170 +190,194 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
     return Scaffold(
       appBar: appBarController(context, () {}, "Questionaire", Colors.white,
           Colors.black, Colors.black),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment(0.8, 0.0),
-                    colors: <Color>[Colors.lightGreen, Colors.green],
-                    tileMode: TileMode.repeated,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 7,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                height: 150,
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.all(10),
+      body: StreamBuilder<dynamic>(
+          initialData: '',
+          stream: RitcoAPI().userChanges,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              print(snapshot.data.uid);
+              return SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      _selectedSurvey.isEmpty
-                          ? 'Loading'
-                          : _selectedSurvey[0]['surveyTitle'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white),
+                    Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment(0.8, 0.0),
+                            colors: <Color>[Colors.lightGreen, Colors.green],
+                            tileMode: TileMode.repeated,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 7,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        height: 150,
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _selectedSurvey.isEmpty
+                                  ? 'Loading'
+                                  : _selectedSurvey[0]['surveyTitle'],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              _selectedSurvey.isEmpty
+                                  ? 'Loading'
+                                  : _selectedSurvey[0]['surveyDescription'],
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white),
+                            ),
+                          ],
+                        )),
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 20),
+                        child: Text(
+                          "Questions",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      _selectedSurvey.isEmpty
-                          ? 'Loading'
-                          : _selectedSurvey[0]['surveyDescription'],
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  ],
-                )),
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
-                child: Text(
-                  "Questions",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
-            ListView.builder(
-                primary: true,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _selectedSurvey.isEmpty
-                    ? 0
-                    : _selectedSurvey[0]['surveyQuestions'].length,
-                itemBuilder: (context, index) => Container(
-                      padding: const EdgeInsets.only(
-                          left: 20, bottom: 10, right: 20),
+                    ListView.builder(
+                        primary: true,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _selectedSurvey.isEmpty
+                            ? 0
+                            : _selectedSurvey[0]['surveyQuestions'].length,
+                        itemBuilder: (context, index) => Container(
+                              padding: const EdgeInsets.only(
+                                  left: 20, bottom: 10, right: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                      _selectedSurvey[0]['surveyQuestions']
+                                          [index],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17),
+                                    ),
+                                  ),
+                                  //multiple choices
+                                  SizedBox(
+                                    child: Column(
+                                        children:
+                                            //  multipleChoices[index]
+                                            QUESTIONS
+                                                .map(
+                                                  (quest) => Row(
+                                                    children: [
+                                                      Radio(
+                                                          key: ValueKey(
+                                                              quest.id),
+                                                          value: int.parse(
+                                                              quest.id),
+                                                          groupValue:
+                                                              identifier[index],
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              //index identifies which question in the array
+                                                              //Value is the question weight
+                                                              // print(
+                                                              //     'Question index:$index');
+                                                              // print(
+                                                              //     'selected value: $value');
+                                                              identifier[
+                                                                      index] =
+                                                                  value as int;
+                                                              selectedAnswersData[
+                                                                  _selectedSurvey[
+                                                                              0]
+                                                                          [
+                                                                          'surveyQuestions']
+                                                                      [
+                                                                      index]] = value;
+                                                              //debug check answers
+                                                              print(
+                                                                  selectedAnswersData);
+                                                            });
+                                                          }),
+                                                      Text(quest.questonName)
+                                                    ],
+                                                  ),
+                                                )
+                                                .toList()),
+                                  ),
+                                ],
+                              ),
+                            )),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 20.0),
                             child: Text(
-                              _selectedSurvey[0]['surveyQuestions'][index],
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17),
+                              "Other Comments",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
-                          //multiple choices
-                          SizedBox(
-                            child: Column(
-                                children:
-                                    //  multipleChoices[index]
-                                    QUESTIONS
-                                        .map(
-                                          (quest) => Row(
-                                            children: [
-                                              Radio(
-                                                  key: ValueKey(quest.id),
-                                                  value: int.parse(quest.id),
-                                                  groupValue: identifier[index],
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      //index identifies which question in the array
-                                                      //Value is the question weight
-                                                      // print(
-                                                      //     'Question index:$index');
-                                                      // print(
-                                                      //     'selected value: $value');
-                                                      identifier[index] =
-                                                          value as int;
-                                                      selectedAnswersData[
-                                                          _selectedSurvey[0][
-                                                                  'surveyQuestions']
-                                                              [index]] = value;
-                                                      //debug check answers
-                                                      print(
-                                                          selectedAnswersData);
-                                                    });
-                                                  }),
-                                              Text(quest.questonName)
-                                            ],
-                                          ),
-                                        )
-                                        .toList()),
+                          TextField(
+                            onChanged: commentHandler,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Comment',
+                            ),
                           ),
                         ],
                       ),
-                    )),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 20.0),
-                    child: Text(
-                      "Other Comments",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
-                  ),
-                  TextField(
-                    onChanged: commentHandler,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Comment',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(20),
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    print(selectedAnswersData);
-                    // submitResponseHandler();
-                  },
-                  child: Text(
-                    isSubmitting ? "Loading..." : "Submit",
-                    style: const TextStyle(color: Colors.white),
-                  )),
-            )
-          ],
-        ),
-      ),
+                    Container(
+                      margin: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            print(selectedAnswersData);
+                            // submitResponseHandler();
+                          },
+                          child: Text(
+                            isSubmitting ? "Loading..." : "Submit",
+                            style: const TextStyle(color: Colors.white),
+                          )),
+                    )
+                  ],
+                ),
+              );
+            }
+
+            if (snapshot.hasData) {
+              print(snapshot.data);
+            }
+            return Center(child: Text('Loading ....'));
+          }),
     );
   }
 }

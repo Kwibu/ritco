@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ritco_app/colors/colorswitch.dart';
 import 'package:ritco_app/screens/GettingStartedScreens/finishing_password.dart';
 import 'package:ritco_app/screens/GettingStartedScreens/sign_up_started.dart';
@@ -10,6 +11,8 @@ import 'package:ritco_app/screens/landing_services.dart';
 import 'package:ritco_app/screens/login_screen.dart';
 import 'package:ritco_app/screens/message_screen.dart';
 import 'package:ritco_app/screens/taking_survey.dart';
+import 'package:ritco_app/services/data_manupilation.dart';
+import 'package:ritco_app/wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "firebase_options.dart";
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,6 +37,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String routeNameGlobal = '';
+  String userId = '';
 
   @override
   void initState() {
@@ -44,16 +48,21 @@ class _MyAppState extends State<MyApp> {
   getAvailableTokenHandler() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final String? username = pref.getString('username');
+    final String? uid = pref.getString('uid');
 
     // final user = FirebaseAuth.instance.currentUser;
 
     dashboardChoosen() {
       var routeName = '/login';
-      if (username != null) {
+      if (uid != null) {
+        print(uid);
+        setState(() {
+          userId = uid;
+        });
         return routeName = "/landing-services";
       }
 
-      if (username == null || username == '') {
+      if (uid == null) {
         return routeName = "/getting-Started";
       }
       return routeName;
@@ -67,25 +76,31 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     MaterialColor primeColor = MaterialColor(0xFF7CB211, color);
+    // print(pref.);
 
-    return MaterialApp(
-      title: 'Ritco Surveys',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: primeColor,
+    return StreamProvider<RitcoUser>.value(
+      value: RitcoAPI().userChanges,
+      initialData: RitcoUser(uid: null),
+      child: MaterialApp(
+        title: 'Ritco Surveys',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: primeColor,
+        ),
+        home: ChosenScreen(routeNameGlobal, userId),
+        routes: {
+          // '/'
+          "/getting-Started": (context) => const GettingStartedScreen(),
+          "/getting-started-signup": (context) => const SignUpStarted(),
+          "/sign-up-credetials": (context) => const FinishingSignUp(),
+          '/login': (context) => const Login(),
+          "/home-screen": (context) => const HomeScreen(),
+          "/message-screen": (context) => const MessageScreen(),
+          "/survey-details-answers": (context) => const SurveyQuestionaire(),
+          "/landing-services": (context) => const ServicesProvider(),
+          "wrapper": (context) => Wrapper()
+        },
       ),
-      home: ChosenScreen(routeNameGlobal),
-      routes: {
-        // '/'
-        "/getting-Started": (context) => const GettingStartedScreen(),
-        "/getting-started-signup": (context) => const SignUpStarted(),
-        "/sign-up-credetials": (context) => const FinishingSignUp(),
-        '/login': (context) => const Login(),
-        "/home-screen": (context) => const HomeScreen(),
-        "/message-screen": (context) => const MessageScreen(),
-        "/survey-details-answers": (context) => const SurveyQuestionaire(),
-        "/landing-services": (context) => const ServicesProvider(),
-      },
     );
   }
 }

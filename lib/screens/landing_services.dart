@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ritco_app/screens/comments_screenL.dart';
 import 'package:ritco_app/screens/profile_screen.dart';
 import 'package:ritco_app/services/data_manupilation.dart';
-import 'package:streams_provider/streams_provider.dart';
+// import 'package:streams_provider/streams_provider.dart';
 
 // class Services extends StatelessWidget {
 //   const Services({ Key? key }) : super(key: key);
@@ -175,7 +175,9 @@ Widget buildHomeServices(context) {
                                       ServiceItemWidget(
                                           val[index]['name'].toString(),
                                           val[index]['description'].toString(),
-                                          val[index].id));
+                                          val[index].id,
+                                          //make sure there is an id
+                                          ''));
                             }
 
                             return const Center(
@@ -213,11 +215,13 @@ class ServiceItemWidget extends StatelessWidget {
   String serviceName;
   String description;
   String serviceId;
+  String uid;
 
   ServiceItemWidget(
     this.serviceName,
     this.description,
     this.serviceId,
+    this.uid,
   );
 
   @override

@@ -57,6 +57,7 @@ class _LoginState extends State<Login> {
 
           await pref.setString("username", userData['displayName']);
           await pref.setString("useraccount", userData['email']!);
+          await pref.setString('uid', userData['localId']);
           // await pref.setString("firstname", userData['firstName']!);
           // await pref.setString("lastname", userData['lastName']!);
 
@@ -258,6 +259,15 @@ class _LoginState extends State<Login> {
                                               BorderRadius.circular(25)),
                                       primary: const Color.fromRGBO(
                                           104, 153, 17, 1)),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              child: InkWell(
+                                onTap: () => Navigator.pushNamed(
+                                    context, '/getting-started-signup'),
+                                child: Center(
+                                  child: Text('SIGN UP'),
                                 ),
                               ),
                             )

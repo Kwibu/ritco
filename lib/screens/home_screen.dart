@@ -161,8 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 userName,
                                                 val[index]['surveyQuestions']
                                                     .length
-                                                    .toString(), 
-                                                    val[index]));
+                                                    .toString(),
+                                                val[index]));
                               }
 
                               return const Center(
@@ -244,9 +244,8 @@ class SurveyItemWidget extends StatelessWidget {
     this.description,
     this.id,
     this.username,
-    this.questionLength, 
-    this.surveyData,
-    {
+    this.questionLength,
+    this.surveyData, {
     Key? key,
   }) : super(key: key);
 
@@ -254,8 +253,8 @@ class SurveyItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        Navigator.of(context)
-            .pushNamed("/survey-details-answers", arguments: {"surveyId": id, "surveyData":surveyData});
+        Navigator.of(context).pushNamed("/survey-details-answers",
+            arguments: {"surveyId": id, "surveyData": surveyData});
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -283,10 +282,15 @@ class SurveyItemWidget extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .6,
+                          child: Text(
+                            title,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
                         ),
                         const SizedBox(
                           height: 4,
