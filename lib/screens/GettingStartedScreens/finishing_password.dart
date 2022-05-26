@@ -83,6 +83,8 @@ class _FinishingSignUpState extends State<FinishingSignUp> {
               await pref.setString("lastname", lastName);
               await pref.setString("useraccount", _loginDetails.email);
               await pref.setString('uid', userData['localId']);
+              
+
               RitcoAPI().setDoc('users', userData['localId'], {
                 'uid': userData['localId'],
                 'email': _loginDetails.email,

@@ -30,6 +30,8 @@ class _ServicesProviderState extends State<ServicesProvider> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final routeArgs_services =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     // void _selectedPage(int index) {
     //   setState(() {
     //     selectedIndex = index;
@@ -37,9 +39,13 @@ class _ServicesProviderState extends State<ServicesProvider> {
     //   print(selectedIndex);
     // }
 
+    print('Services uid:  ${routeArgs_services['uid']}');
+
     final List<Widget> _page = [
-      buildHomeServices(context),
-      CommentScreen(),
+      buildHomeServices(context, routeArgs_services['uid']),
+      CommentScreen(
+        uid: routeArgs_services['uid'],
+      ),
       ProfileScreen(),
     ];
 
@@ -68,7 +74,7 @@ class _ServicesProviderState extends State<ServicesProvider> {
   }
 }
 
-Widget buildHomeServices(context) {
+Widget buildHomeServices(context, uid) {
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -177,7 +183,7 @@ Widget buildHomeServices(context) {
                                           val[index]['description'].toString(),
                                           val[index].id,
                                           //make sure there is an id
-                                          ''));
+                                          uid.toString()));
                             }
 
                             return const Center(
@@ -229,8 +235,8 @@ class ServiceItemWidget extends StatelessWidget {
     return InkWell(
       onTap: () async {
         //navigate to a list of surveys
-        Navigator.of(context)
-            .pushNamed("/home-screen", arguments: {"serviceId": serviceId});
+        Navigator.of(context).pushNamed("/home-screen",
+            arguments: {"serviceId": serviceId, 'uid': uid});
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

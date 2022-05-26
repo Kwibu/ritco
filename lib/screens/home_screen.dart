@@ -147,22 +147,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 surveyCount = val.length;
 
                                 return ListView.builder(
-                                    primary: true,
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: val.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) =>
-                                            SurveyItemWidget(
-                                                val[index]['surveyTitle'],
-                                                val[index]['surveyDescription'],
-                                                val[index].id,
-                                                userName,
-                                                val[index]['surveyQuestions']
-                                                    .length
-                                                    .toString(),
-                                                val[index]));
+                                  primary: true,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: val.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          SurveyItemWidget(
+                                              val[index]['surveyTitle'],
+                                              val[index]['surveyDescription'],
+                                              val[index].id,
+                                              userName,
+                                              val[index]['surveyQuestions']
+                                                  .length
+                                                  .toString(),
+                                              val[index],
+                                              serviceID['uid']),
+                                );
                               }
 
                               return const Center(
@@ -238,6 +239,7 @@ class SurveyItemWidget extends StatelessWidget {
   String questionLength;
   String username;
   var surveyData;
+  String uid;
 
   SurveyItemWidget(
     this.title,
@@ -245,16 +247,18 @@ class SurveyItemWidget extends StatelessWidget {
     this.id,
     this.username,
     this.questionLength,
-    this.surveyData, {
+    this.surveyData,
+    this.uid, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('uid on survey item: $uid');
     return InkWell(
       onTap: () async {
         Navigator.of(context).pushNamed("/survey-details-answers",
-            arguments: {"surveyId": id, "surveyData": surveyData});
+            arguments: {"surveyId": id, "surveyData": surveyData, 'uid': uid});
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

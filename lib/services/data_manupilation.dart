@@ -49,6 +49,8 @@ class RitcoAPI {
     return RitcoUser(uid: user!.uid);
   }
 
+  //future get user
+
   //listen to auth changes
   Stream<RitcoUser> get userChanges {
     return _auth.authStateChanges().map(firebaseUser);

@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentScreen extends StatefulWidget {
-  const CommentScreen({Key? key}) : super(key: key);
+  final uid;
+  const CommentScreen({Key? key, this.uid}) : super(key: key);
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
@@ -51,8 +52,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
       transformData.forEach((surveyId, surveyData) {
         setState(() {
-          THREADS.add(
-            Post(
+          THREADS.add(Post(
               postId: surveyId,
               postTitle: surveyData["username"],
               postSubTitle: surveyData["userEmail"],
@@ -83,7 +83,8 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(likes);
+    // print(likes);
+    print('comment screen uid: ${widget.uid}');
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
