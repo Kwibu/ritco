@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ritco_app/models/answer.dart';
 import 'package:ritco_app/models/questionModel.dart';
+import 'package:ritco_app/screens/landing_services.dart';
 import 'package:ritco_app/services/data_manupilation.dart';
 import 'package:ritco_app/widgets/app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,15 +48,15 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
 
   @override
   void initState() {
-    getCredentials();
+    // getCredentials();
     super.initState();
   }
 
-  Future getCredentials() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    survedId = pref.getString('surveyId')!;
-    username = pref.getString('username')!;
-  }
+  // Future getCredentials() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   survedId = pref.getString('surveyId')!;
+  //   username = pref.getString('username')!;
+  // }
 
   final Stream<QuerySnapshot> surveys =
       FirebaseFirestore.instance.collection('surveys').snapshots();
@@ -99,7 +100,7 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
 
     // ignore: todo
     // TODO SUBMITTING SURVEY TO THE DATABASE
-    void submitResponseHandler() async {
+    void submitResponseHandler(serviceId, Uid) async {
       try {
         setState(() {
           isSubmitting = true;
@@ -149,16 +150,35 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
           showDialog(
               context: context,
               builder: (ctx) => AlertDialog(
-                    title: const Text("Wow"),
+                    title: const Text("Submitted successfully"),
                     content:
                         const Text("Your Response has been sent successfully"),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed('/home-screen');
+                            Navigator.of(context).pushReplacementNamed(
+                                '/landing-services',
+                                arguments: {'uid': Uid});
                           },
-                          child: const Text("OK"))
+                          child: const Text("Services",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white))),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacementNamed(
+                                '/home-screen',
+                                arguments: {
+                                  "serviceId": serviceId,
+                                  'uid': Uid
+                                });
+                          },
+                          child: const Text(
+                            "Submit another",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ))
                     ],
                   ));
 
@@ -356,7 +376,9 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                             child: ElevatedButton(
                                 onPressed: () {
                                   print(selectedAnswersData);
-                                  submitResponseHandler();
+                                  submitResponseHandler(
+                                      _selectedSurvey[0]['serviceID'],
+                                      routeArgs['uid']);
                                 },
                                 child: Text(
                                   isSubmitting || waiting

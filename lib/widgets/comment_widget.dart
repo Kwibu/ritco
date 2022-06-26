@@ -221,7 +221,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
-                        child: Text(widget.postTitle.substring(0, 2))),
+                        child: Text(widget.postTitle.substring(0, 0))),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
