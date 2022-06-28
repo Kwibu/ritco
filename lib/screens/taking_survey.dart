@@ -147,40 +147,7 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                     ],
                   ));
         } else {
-          showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                    title: const Text("Submitted successfully"),
-                    content:
-                        const Text("Your Response has been sent successfully"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacementNamed(
-                                '/landing-services',
-                                arguments: {'uid': Uid});
-                          },
-                          child: const Text("Services",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white))),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacementNamed(
-                                '/home-screen',
-                                arguments: {
-                                  "serviceId": serviceId,
-                                  'uid': Uid
-                                });
-                          },
-                          child: const Text(
-                            "Submit another",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ))
-                    ],
-                  ));
+          surveySubmittedSucceessfuly(context, Uid, serviceId);
 
           setState(() {
             isLoading = false;
@@ -376,9 +343,49 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
                             child: ElevatedButton(
                                 onPressed: () {
                                   print(selectedAnswersData);
-                                  submitResponseHandler(
-                                      _selectedSurvey[0]['serviceID'],
-                                      routeArgs['uid']);
+                                  // submitResponseHandler(
+                                  //     _selectedSurvey[0]['serviceID'],
+                                  //     routeArgs['uid']);
+                                  //sunbmit survey
+                                  try {
+                                    RitcoAPI().setDocMergeSurveys(
+                                        docId: routeArgs['surveyId'],
+                                        data: {
+                                          'answers': {
+                                            '${routeArgs['uid']}-${DateTime.now()}':
+                                                {
+                                              'choices': selectedAnswersData,
+                                              'created_at': DateTime.now(),
+                                              'gender':
+                                                  snapshot.data?['gender'],
+                                              'uid': routeArgs['uid']
+                                            }
+                                          }
+                                        }).then((value) =>
+                                        surveySubmittedSucceessfuly(
+                                            context,
+                                            routeArgs['uid'],
+                                            _selectedSurvey[0]['serviceID']));
+                                  } catch (e) {
+                                    print(
+                                        'failed to submite survey with error:' +
+                                            e.toString());
+                                    showDialog(
+                                        context: context,
+                                        builder: (ctx) => AlertDialog(
+                                              title: const Text("Oooops"),
+                                              content: const Text(
+                                                  "Failed to submit survey, Check that you have stable internet"),
+                                              actions: [
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                    },
+                                                    child: const Text("OK"))
+                                              ],
+                                            ));
+                                  }
                                 },
                                 child: Text(
                                   isSubmitting || waiting
@@ -392,5 +399,36 @@ class _SurveyQuestionaireState extends State<SurveyQuestionaire> {
             ],
           ),
         ));
+  }
+
+  Future<dynamic> surveySubmittedSucceessfuly(
+      BuildContext context, Uid, serviceId) {
+    return showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: const Text("Submitted successfully"),
+              content: const Text("Your Response has been sent successfully"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed(
+                          '/landing-services',
+                          arguments: {'uid': Uid});
+                    },
+                    child: const Text("Services",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white))),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed('/home-screen',
+                          arguments: {"serviceId": serviceId, 'uid': Uid});
+                    },
+                    child: const Text(
+                      "Submit another",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ))
+              ],
+            ));
   }
 }

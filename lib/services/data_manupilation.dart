@@ -31,6 +31,15 @@ class RitcoAPI {
         .set(data);
   }
 
+  //submit surevey
+
+  Future setDocMergeSurveys({docId,data}) async {
+    return await createCollectionRef(collectionPath: 'surveys')
+        .doc(docId)
+        .set(data
+          , SetOptions(merge: true));
+  }
+
   //reading data to firestor......
 
   // authChanges() {
